@@ -1,0 +1,87 @@
+<template>
+<div>
+    <div class="columns">
+        <div class="column is-offset-1 is-10">
+            <b-field>
+                <b-input @input="reload" expanded></b-input>
+                <b-select v-model="selectedQuality" placeholder="Quality">
+                    <option value="1080">1080p</option>
+                    <option value="720">720p</option>
+                    <option value="480">480p</option>
+                </b-select>
+            </b-field>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-10 is-offset-1">
+            <b-table
+                :data="data"
+                :columns="columns"
+                striped
+                focusable
+                :loading="loading"
+                :mobile-cards="false"
+                :checked-rows.sync="checkedRows"
+                checkable
+            >
+
+            </b-table>
+        </div>
+    </div>
+    <button @click="download" v-if="checkedRows.length > 0" class="button has-background-link has-text-white" style="position: fixed; bottom: 10px; right: 10px;">Download {{ checkedRows.length }} episodes</button>
+</div>
+</template>
+<script>
+import Downloader from '../xdcc';
+
+const { ipcRenderer } = require('electron');
+
+
+export default {
+    data() {
+        return {
+            loading: false,
+            data: [],
+            columns: [
+                {
+                    field: 'bot',
+                    label: 'Bot',
+                    sortable: true,
+                },
+                {
+                    field: 'filename',
+                    label: 'Filename',
+                    sortable: true,
+                },
+                {
+                    field: 'pack',
+                    label: 'Pack',
+                    numeric: true,
+                },
+                {
+                    field: 'size',
+                    label: 'Size',
+                },
+            ],
+            checkedRows: [],
+            selectedQuality: '1080',
+        };
+    },
+    mounted() {
+        ipcRenderer.on('updateTable', (event, data) => {
+            this.data = data;
+            this.loading = false;
+        });
+    },
+    methods: {
+        reload(name) {
+            const quality = this.selectedQuality;
+            ipcRenderer.send('reloadData', { name, quality });
+            this.loading = true;
+        },
+        download() {
+            Downloader(this.checkedRows);
+        },
+    },
+};
+</script>
