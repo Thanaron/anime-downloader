@@ -1,4 +1,5 @@
 const ircXdcc = require('irc-xdcc');
+const log = require('electron-log');
 
 export default class Downloader {
     constructor(list) {
@@ -15,16 +16,16 @@ export default class Downloader {
             resume: true,
         })
             .then((instance) => {
-                console.log(instance);
+                log.debug(instance);
                 this.instance = instance;
                 this.download();
 
                 this.instance.on('xdcc-progress', (xdccInstance, received) => {
-                    console.log(`${JSON.stringify(xdccInstance)} ${received}`);
+                    log.debug(`${JSON.stringify(xdccInstance)} ${received}`);
                 });
             })
             .catch((error) => {
-                console.error(`Error: ${error}`);
+                log.error(error);
             });
     }
 
@@ -33,11 +34,11 @@ export default class Downloader {
             this.instance
                 .xdcc({ botNick: pack.bot, packId: pack.pack })
                 .then((xdccInstance) => {
-                    console.log(xdccInstance);
+                    log.debug(xdccInstance);
                     xdccInstance.start();
                 })
                 .catch((error) => {
-                    console.error(`Error: ${error}`);
+                    log.error(error);
                 });
         });
     }

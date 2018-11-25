@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="margin-top: 20px">
     <div class="columns">
         <div class="column is-offset-1 is-10">
             <b-field>
@@ -80,7 +80,7 @@ export default {
             this.loading = true;
         },
         download() {
-            Downloader(this.checkedRows);
+            new Downloader(this.checkedRows);
         },
     },
 };
