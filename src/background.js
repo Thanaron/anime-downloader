@@ -3,6 +3,9 @@ import {
 } from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
+const log = require('electron-log');
+const unhandled = require('electron-unhandled');
+unhandled({ logger: log.error });
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let win;

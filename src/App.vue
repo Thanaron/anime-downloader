@@ -5,11 +5,12 @@
 </template>
 
 <script>
-import Home from './views/Home.vue';
+const log = require('electron-log');
+const unhandled = require('electron-unhandled');
 
 export default {
-    name: 'app',
-    components: {
+    created() {
+        unhandled({ logger: log.error });
         Home,
     },
 };
