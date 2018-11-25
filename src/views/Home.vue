@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="margin-top: 20px">
     <div class="columns">
         <div class="column is-offset-1 is-10">
             <b-field>
