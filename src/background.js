@@ -1,7 +1,17 @@
 import {
     app, protocol, BrowserWindow, ipcMain,
 } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+
+const log = require('electron-log');
+const unhandled = require('electron-unhandled');
+
+unhandled({ logger: log.error });
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -101,7 +111,11 @@ app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         await installVueDevtools();
+    } else {
+        autoUpdater.autoDownload = false;
+        autoUpdater.checkForUpdates();
     }
+
     createWindow();
 });
 
@@ -119,3 +133,55 @@ if (isDevelopment) {
         });
     }
 }
+
+autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+});
+
+let updateWindow;
+
+autoUpdater.on('update-available', (info) => {
+    log.info(`Update available: ${JSON.stringify(info)}`);
+
+    updateWindow = new BrowserWindow({
+        frame: false,
+        transparent: true,
+        maximizable: false,
+        parent: win,
+        acceptFirstMouse: true,
+    });
+
+    updateWindow.loadURL('app://./index.html#update');
+    updateWindow.webContents.on('did-finish-load', () => {
+        updateWindow.webContents.send('updateInfo', {
+            version: info.releaseName,
+            notes: info.releaseNotes,
+        });
+    });
+});
+
+autoUpdater.on('update-not-available', (info) => {
+    log.info(`Update not available: ${JSON.stringify(info)}`);
+    updateWindow = null;
+});
+
+autoUpdater.on('error', (ev, err) => {
+    log.info(`Error in auto-updater: ${err}`);
+});
+
+autoUpdater.on('download-progress', (progress) => {
+    updateWindow.webContents.send('updateDownloadProgress', progress.percent);
+});
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+    log.info(`Update downloaded successfully. ${JSON.stringify(info)}`);
+    updateWindow.webContents.send('updateDownloaded');
+});
+
+ipcMain.on('downloadUpdate', () => {
+    autoUpdater.downloadUpdate();
+});
+
+ipcMain.on('installUpdate', () => {
+    autoUpdater.quitAndInstall(true, true);
+});
