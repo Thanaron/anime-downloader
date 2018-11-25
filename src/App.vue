@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <home/>
+    <router-view/>
   </div>
 </template>
 
@@ -11,7 +11,6 @@ const unhandled = require('electron-unhandled');
 export default {
     created() {
         unhandled({ logger: log.error });
-        Home,
     },
 };
 </script>
