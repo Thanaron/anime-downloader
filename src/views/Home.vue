@@ -80,7 +80,7 @@ export default {
             this.loading = true;
         },
         download() {
-            Downloader(this.checkedRows);
+            new Downloader(this.checkedRows);
         },
     },
 };
