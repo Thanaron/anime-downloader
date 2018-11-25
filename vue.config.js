@@ -4,7 +4,7 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
             builderOptions: {
-                productName: 'HorribleSubsDownloader',
+                productName: 'horriblesubs-downloader',
                 appId: 'de.tobiaskuechler.horriblesubsdownloader',
                 win: {
                     target: ['nsis', 'zip'],
@@ -12,7 +12,7 @@ module.exports = {
                     publish: {
                         provider: 'github',
                         owner: 'Thanaron',
-                        repo: 'horriblesubsdownloader',
+                        repo: 'horriblesubs-downloader',
                     },
                 },
                 nsis: {
