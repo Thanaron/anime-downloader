@@ -1,11 +1,18 @@
 import {
     app, protocol, BrowserWindow, ipcMain,
 } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
+
 unhandled({ logger: log.error });
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let win;
@@ -104,7 +111,11 @@ app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         await installVueDevtools();
+    } else {
+        autoUpdater.autoDownload = false;
+        autoUpdater.checkForUpdates();
     }
+
     createWindow();
 });
 
@@ -122,3 +133,25 @@ if (isDevelopment) {
         });
     }
 }
+
+autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+});
+
+autoUpdater.on('update-available', (info) => {
+    log.info(`Update available: ${JSON.stringify(info)}`);
+});
+autoUpdater.on('update-not-available', (info) => {
+    log.info(`Update not available: ${JSON.stringify(info)}`);
+});
+
+autoUpdater.on('error', (ev, err) => {
+    log.info(`Error in auto-updater: ${err}`);
+});
+
+autoUpdater.on('download-progress', (progress) => {
+});
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+    log.info(`Update downloaded successfully. ${JSON.stringify(info)}`);
+});
