@@ -18,14 +18,8 @@
                     @click="downloadUpdate"
                     class="button is-primary"
                     v-if="!downloaded"
-                    value="Download"
-                />
-                <button
-                    @click="installUpdate"
-                    class="button is-primary"
-                    v-else
-                    value="Quit and Install"
-                />
+                >Download</button>
+                <button @click="installUpdate" class="button is-primary" v-else>Quit and Install</button>
             </footer>
         </div>
     </b-modal>
