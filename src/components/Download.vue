@@ -14,13 +14,8 @@
                 </b-field>
             </section>
             <footer class="modal-card-foot">
-                <button class="button" type="button" @click="cancelDownloads" value="Cancel"/>
-                <button
-                    class="button is-primary"
-                    :disabled="!allFinished"
-                    @click="closeModal"
-                    value="OK"
-                />
+                <button class="button" type="button" @click="cancelDownloads">Cancel</button>
+                <button class="button is-primary" :disabled="!allFinished" @click="closeModal">OK</button>
             </footer>
         </div>
     </b-modal>
