@@ -30,9 +30,8 @@
             v-if="checkedRows.length > 0"
             class="button has-background-link has-text-white"
             style="position: fixed; bottom: 10px; right: 10px;"
-            value="Download {{ checkedRows.length }} episodes"
             @click="download"
-        />
+        >Download {{ checkedRows.length }} episodes</button>
     </div>
 </template>
 <script>
