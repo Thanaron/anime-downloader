@@ -36,10 +36,9 @@
     </div>
 </template>
 <script>
-import Downloader from '../xdcc';
+import Download from '../components/Download.vue';
 
 const { ipcRenderer } = require('electron');
-
 
 export default {
     data() {
@@ -84,7 +83,16 @@ export default {
             this.loading = true;
         },
         download() {
-            new Downloader(this.checkedRows);
+            this.checkedRows.forEach(element => {
+                element.progress = 0;
+            });
+
+            this.$modal.open({
+                parent: this,
+                component: Download,
+                hasModalCard: true,
+                props: { list: this.checkedRows },
+            });
         },
     },
 };
