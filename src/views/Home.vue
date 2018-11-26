@@ -78,7 +78,7 @@ export default {
     methods: {
         reload(name) {
             const quality = this.selectedQuality;
-            ipcRenderer.send('reloadData', { name, quality });
+            ipcRenderer.send('searchAnime', name);
             this.loading = true;
         },
         download() {
