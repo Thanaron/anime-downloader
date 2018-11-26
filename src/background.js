@@ -1,6 +1,4 @@
-import {
-    app, protocol, BrowserWindow, ipcMain,
-} from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
@@ -73,7 +71,7 @@ function createScrapingWindow(data) {
                 table = rows;
                 require('electron').ipcRenderer.send('documentResult', table);
             }, 1000);
-        `,
+        `
         );
     });
 }
@@ -122,7 +120,7 @@ app.on('ready', async () => {
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
     if (process.platform === 'win32') {
-        process.on('message', (data) => {
+        process.on('message', data => {
             if (data === 'graceful-exit') {
                 app.quit();
             }
@@ -140,7 +138,7 @@ autoUpdater.on('checking-for-update', () => {
 
 let updateWindow;
 
-autoUpdater.on('update-available', (info) => {
+autoUpdater.on('update-available', info => {
     log.info(`Update available: ${JSON.stringify(info)}`);
 
     updateWindow = new BrowserWindow({
@@ -160,7 +158,7 @@ autoUpdater.on('update-available', (info) => {
     });
 });
 
-autoUpdater.on('update-not-available', (info) => {
+autoUpdater.on('update-not-available', info => {
     log.info(`Update not available: ${JSON.stringify(info)}`);
     updateWindow = null;
 });
@@ -169,7 +167,7 @@ autoUpdater.on('error', (ev, err) => {
     log.info(`Error in auto-updater: ${err}`);
 });
 
-autoUpdater.on('download-progress', (progress) => {
+autoUpdater.on('download-progress', progress => {
     updateWindow.webContents.send('updateDownloadProgress', progress.percent);
 });
 
