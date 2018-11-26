@@ -1,19 +1,33 @@
 <template>
-     <b-modal active has-modal-card :canCancel="['escape']" style="background-color: transparent">
+    <b-modal :canCancel="['escape']" active has-modal-card style="background-color: transparent">
         <div class="modal-card modal-window">
-                <header class="modal-card-head click-on" style="-webkit-app-region: drag">
-                    <div class="modal-card-title click-on">Update available - {{ version }}</div>
-                    <a class="delete is-medium click-on" style="-webkit-app-region: no-drag" @click="cancelUpdate"></a>
-                </header>
-                <section class="modal-card-body click-on">
-                    <div class="content" v-html="notes" />
-                </section>
-                <footer class="modal-card-foot click-on">
-                    <button class="button" type="button" @click="cancelUpdate">Cancel</button>
-                    <button class="button is-primary" v-if="!downloaded" @click="downloadUpdate">Download</button>
-                    <button class="button is-primary" v-else @click="installUpdate">Quit and Install</button>
-                </footer>
-            </div>
+            <header class="modal-card-head click-on" style="-webkit-app-region: drag">
+                <div class="modal-card-title click-on">Update available - {{ version }}</div>
+                <a
+                    @click="cancelUpdate"
+                    class="delete is-medium click-on"
+                    style="-webkit-app-region: no-drag"
+                ></a>
+            </header>
+            <section class="modal-card-body click-on">
+                <div class="content" v-html="notes"/>
+            </section>
+            <footer class="modal-card-foot click-on">
+                <button @click="cancelUpdate" class="button" type="button">Cancel</button>
+                <button
+                    @click="downloadUpdate"
+                    class="button is-primary"
+                    v-if="!downloaded"
+                    value="Download"
+                />
+                <button
+                    @click="installUpdate"
+                    class="button is-primary"
+                    v-else
+                    value="Quit and Install"
+                />
+            </footer>
+        </div>
     </b-modal>
 </template>
 

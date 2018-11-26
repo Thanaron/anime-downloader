@@ -1,6 +1,6 @@
 {
     "name": "horriblesubsdownloader",
-    "version": "0.1.1",
+    "version": "0.3.0",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
@@ -10,7 +10,8 @@
         "electron:serve": "vue-cli-service electron:serve",
         "postinstall": "electron-builder install-app-deps",
         "test:unit": "vue-cli-service test:unit",
-        "release": "vue-cli-service electron:build --publish onTagOrDraft"
+        "release": "vue-cli-service electron:build --publish onTagOrDraft",
+        "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
     },
     "dependencies": {
         "buefy": "^0.7.1",
@@ -36,8 +37,11 @@
         "babel-jest": "^23.6.0",
         "electron": "^3.0.0",
         "eslint": "^5.8.0",
-        "eslint-plugin-vue": "^5.0.0-0",
+        "eslint-config-prettier": "^3.3.0",
+        "eslint-plugin-prettier": "^3.0.0",
+        "eslint-plugin-vue": "^4.7.1",
         "node-sass": "^4.9.0",
+        "prettier": "^1.15.2",
         "sass-loader": "^7.0.1",
         "vue-cli-plugin-electron-builder": "^1.0.0-rc.8",
         "vue-template-compiler": "^2.5.17"

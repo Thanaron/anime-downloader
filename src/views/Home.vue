@@ -1,41 +1,44 @@
 <template>
-<div style="margin-top: 20px">
-    <div class="columns">
-        <div class="column is-offset-1 is-10">
-            <b-field>
-                <b-input @input="reload" expanded></b-input>
-                <b-select v-model="selectedQuality" placeholder="Quality">
-                    <option value="1080">1080p</option>
-                    <option value="720">720p</option>
-                    <option value="480">480p</option>
-                </b-select>
-            </b-field>
+    <div style="margin-top: 20px">
+        <div class="columns">
+            <div class="column is-offset-1 is-10">
+                <b-field>
+                    <b-input :loading="loading" expanded placeholder="Search.." @input="reload"/>
+                    <b-select v-model="selectedQuality" placeholder="Quality">
+                        <option value="1080">1080p</option>
+                        <option value="720">720p</option>
+                        <option value="480">480p</option>
+                    </b-select>
+                </b-field>
+            </div>
         </div>
-    </div>
-    <div class="columns">
-        <div class="column is-10 is-offset-1">
-            <b-table
-                :data="data"
-                :columns="columns"
-                striped
-                focusable
-                :loading="loading"
-                :mobile-cards="false"
-                :checked-rows.sync="checkedRows"
-                checkable
-            >
-
-            </b-table>
+        <div class="columns">
+            <div class="column is-10 is-offset-1">
+                <b-table
+                    :checked-rows.sync="checkedRows"
+                    :columns="columns"
+                    :data="data"
+                    :loading="loading"
+                    :mobile-cards="false"
+                    checkable
+                    focusable
+                    striped
+                />
+            </div>
         </div>
+        <button
+            v-if="checkedRows.length > 0"
+            class="button has-background-link has-text-white"
+            style="position: fixed; bottom: 10px; right: 10px;"
+            value="Download {{ checkedRows.length }} episodes"
+            @click="download"
+        />
     </div>
-    <button @click="download" v-if="checkedRows.length > 0" class="button has-background-link has-text-white" style="position: fixed; bottom: 10px; right: 10px;">Download {{ checkedRows.length }} episodes</button>
-</div>
 </template>
 <script>
-import Downloader from '../xdcc';
+import Download from '../components/Download.vue';
 
 const { ipcRenderer } = require('electron');
-
 
 export default {
     data() {
@@ -80,7 +83,16 @@ export default {
             this.loading = true;
         },
         download() {
-            new Downloader(this.checkedRows);
+            this.checkedRows.forEach(element => {
+                element.progress = 0;
+            });
+
+            this.$modal.open({
+                parent: this,
+                component: Download,
+                hasModalCard: true,
+                props: { list: this.checkedRows },
+            });
         },
     },
 };
