@@ -3,7 +3,7 @@
         <div class="columns">
             <div class="column is-offset-1 is-10">
                 <b-field>
-                    <b-input :loading="loading" expanded placeholder="Search.." @input="reload"/>
+                    <b-input :loading="loading" expanded placeholder="Search.." @blur="reload"/>
                     <b-select v-model="selectedQuality" placeholder="Quality">
                         <option value="1080">1080p</option>
                         <option value="720">720p</option>
