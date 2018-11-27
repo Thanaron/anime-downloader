@@ -2,7 +2,6 @@ import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
-import Packlist from './packlist';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
@@ -91,12 +90,6 @@ if (isDevelopment) {
         });
     }
 }
-
-// Search queries
-
-ipcMain.on('searchAnime', (event, name) => {
-    Packlist.search(name);
-});
 
 autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...');
