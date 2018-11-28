@@ -5,7 +5,11 @@
                 <div class="modal-card-title">Downloading episodes</div>
             </header>
             <section class="modal-card-body">
-                <b-field v-for="entry in downloadList" :label="entry.name" :key="entry.name">
+                <b-field
+                    v-for="entry in downloadList"
+                    :label="entry.name + ' - ' + entry.episode"
+                    :key="entry.pack"
+                >
                     <progress
                         :class="{ progress: true, 'is-small': true, 'is-success': entry.finished }"
                         :value="entry.progress"
@@ -15,7 +19,13 @@
             </section>
             <footer class="modal-card-foot">
                 <button class="button" type="button" @click="cancelDownloads">Cancel</button>
-                <button class="button is-primary" :disabled="!allFinished" @click="closeModal">OK</button>
+                <button
+                    class="button is-primary"
+                    v-if="!allFinished"
+                    :disabled="downloadStarted"
+                    @click="performDownload"
+                >Start</button>
+                <button class="button is-primary" v-else @click="closeModal">OK</button>
             </footer>
         </div>
     </b-modal>
@@ -30,12 +40,17 @@ export default {
     data() {
         return {
             downloadList: [],
+            downloadStarted: false,
         };
     },
     created() {
         this.list.forEach(element => {
             this.downloadList.push({
-                name: element.filename,
+                bot: element.bot,
+                name: element.name,
+                episode: element.episode,
+                size: element.size,
+                pack: element.pack,
                 progress: 0,
                 finished: false,
             });
@@ -48,12 +63,10 @@ export default {
             );
         },
     },
-    mounted() {
-        this.performDownload();
-    },
     methods: {
         async performDownload() {
-            const downloader = new Downloader(this.list);
+            this.downloadStarted = true;
+            const downloader = new Downloader(this.downloadList);
             await downloader.connect();
             downloader.download();
 
@@ -62,7 +75,12 @@ export default {
                 (xdccInstance, received) => {
                     const entry = this.downloadList.find(
                         element =>
-                            element.name === xdccInstance.xdccInfo.fileName
+                            xdccInstance.xdccInfo.fileName.includes(
+                                element.name
+                            ) &&
+                            xdccInstance.xdccInfo.fileName.includes(
+                                element.episode
+                            )
                     );
                     entry.progress = xdccInstance.xdccInfo.progress;
                 }
@@ -70,7 +88,9 @@ export default {
 
             downloader.instance.on('xdcc-complete', xdccInstance => {
                 const entry = this.downloadList.find(
-                    element => element.name === xdccInstance.xdccInfo.fileName
+                    element =>
+                        xdccInstance.xdccInfo.fileName.includes(element.name) &&
+                        xdccInstance.xdccInfo.fileName.includes(element.episode)
                 );
                 entry.progress = 100;
                 entry.finished = true;
