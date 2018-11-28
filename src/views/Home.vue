@@ -1,94 +1,98 @@
 <template>
-    <div style="margin-top: 20px">
+    <div style="margin-top: 20px;">
         <div class="columns">
-            <div class="column is-offset-1 is-10">
+            <div class="column is-offset-1 is-8">
                 <b-field>
-                    <b-input :loading="loading" expanded placeholder="Search.." @input="reload"/>
-                    <b-select v-model="selectedQuality" placeholder="Quality">
+                    <b-input
+                        v-model="searchInput"
+                        expanded
+                        placeholder="Search.."
+                        @keyup.enter.native="search"
+                    />
+                    <b-select v-model="selectedResolution" placeholder="Quality">
                         <option value="1080">1080p</option>
                         <option value="720">720p</option>
                         <option value="480">480p</option>
                     </b-select>
                 </b-field>
             </div>
-        </div>
-        <div class="columns">
-            <div class="column is-10 is-offset-1">
-                <b-table
-                    :checked-rows.sync="checkedRows"
-                    :columns="columns"
-                    :data="data"
-                    :loading="loading"
-                    :mobile-cards="false"
-                    checkable
-                    focusable
-                    striped
-                />
+            <div class="column is-2">
+                <button
+                    :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
+                    :disabled="loading"
+                    @click="search"
+                >Search</button>
             </div>
         </div>
-        <button
-            v-if="checkedRows.length > 0"
-            class="button has-background-link has-text-white"
-            style="position: fixed; bottom: 10px; right: 10px;"
-            @click="download"
-        >Download {{ checkedRows.length }} episodes</button>
+        <div class="result-table">
+            <b-table
+                :checked-rows.sync="checkedRows"
+                :data="data.length > 0 ? data : []"
+                :loading="loading"
+                checkable
+                striped
+                :paginated="data.length > 0"
+                per-page="12"
+            >
+                <template slot-scope="props">
+                    <b-table-column field="bot" label="Bot" sortable width="200">{{ props.row.bot }}</b-table-column>
+                    <b-table-column field="name" label="Name" sortable centered>{{ props.row.name }}</b-table-column>
+                    <b-table-column
+                        field="episode"
+                        label="Episode"
+                        sortable
+                        numeric
+                        width="30"
+                    >{{ props.row.episode }}</b-table-column>
+                    <b-table-column
+                        field="resolution"
+                        label="Resolution"
+                        numeric
+                        width="100"
+                    >{{ props.row.resolution }}p</b-table-column>
+                </template>
+
+                <template slot="bottom-left">
+                    <button
+                        v-if="checkedRows.length > 0"
+                        class="button has-background-link has-text-white"
+                        @click="download"
+                    >Download {{ checkedRows.length }} episodes</button>
+                </template>
+            </b-table>
+        </div>
     </div>
 </template>
 <script>
-import Download from '../components/Download.vue';
-
-const { ipcRenderer } = require('electron');
+import DownloadProgressModal from '../components/DownloadProgressModal.vue';
+import Packlist from '../packlist';
 
 export default {
     data() {
         return {
             loading: false,
             data: [],
-            columns: [
-                {
-                    field: 'bot',
-                    label: 'Bot',
-                    sortable: true,
-                },
-                {
-                    field: 'filename',
-                    label: 'Filename',
-                    sortable: true,
-                },
-                {
-                    field: 'pack',
-                    label: 'Pack',
-                    numeric: true,
-                },
-                {
-                    field: 'size',
-                    label: 'Size',
-                },
-            ],
             checkedRows: [],
-            selectedQuality: '1080',
+            selectedResolution: '1080',
+            searchInput: '',
         };
     },
-    mounted() {
-        ipcRenderer.on('updateTable', (event, data) => {
-            this.data = data;
-            this.loading = false;
-        });
-    },
     methods: {
-        reload(name) {
-            const quality = this.selectedQuality;
-            ipcRenderer.send('reloadData', { name, quality });
+        search() {
             this.loading = true;
+            const searchData = {
+                name: this.searchInput,
+                resolution: this.selectedResolution,
+            };
+            Packlist.search(searchData).then(result => {
+                this.data = result;
+                this.loading = false;
+            });
         },
         download() {
-            this.checkedRows.forEach(element => {
-                element.progress = 0;
-            });
-
             this.$modal.open({
                 parent: this,
-                component: Download,
+                component: DownloadProgressModal,
                 hasModalCard: true,
                 props: { list: this.checkedRows },
             });
@@ -96,3 +100,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.result-table {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+</style>
