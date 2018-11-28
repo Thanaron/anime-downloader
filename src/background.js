@@ -2,7 +2,6 @@ import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
-
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
 
