@@ -6,7 +6,7 @@
             </header>
             <section class="modal-card-body">
                 <b-field
-                    v-for="entry in downloadList"
+                    v-for="entry in episodesToDownload"
                     :label="entry.name + ' - ' + entry.episode"
                     :key="entry.pack"
                 >
@@ -45,7 +45,7 @@ export default {
     },
     created() {
         this.list.forEach(element => {
-            this.downloadList.push({
+            this.episodesToDownload.push({
                 bot: element.bot,
                 name: element.name,
                 episode: element.episode,

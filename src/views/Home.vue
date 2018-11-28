@@ -20,7 +20,7 @@
                 <button
                     :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
                     :disabled="loading"
-                    @click="reload"
+                    @click="search"
                 >Search</button>
             </div>
         </div>
