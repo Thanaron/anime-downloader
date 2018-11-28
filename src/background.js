@@ -14,7 +14,6 @@ log.info('App starting...');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let win;
-let searchWindow;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true });
@@ -22,13 +21,15 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         width: 800,
-        height: 600,
+        height: 770,
+        minWidth: 800,
+        minHeight: 770,
+        maxHeight: 770,
         title: `HorribleSubs Downloader - Version ${app.getVersion()}`,
         webPreferences: {
             webSecurity: false,
         },
     });
-    searchWindow = new BrowserWindow({ show: false });
 
     if (isDevelopment || process.env.IS_TEST) {
         // Load the url of the dev server if in development mode
@@ -44,46 +45,6 @@ function createWindow() {
         win = null;
     });
 }
-
-function createScrapingWindow(data) {
-    searchWindow.loadURL(`https://xdcc.horriblesubs.info/?search=${data.name} ${data.quality}`);
-
-    searchWindow.webContents.once('did-navigate', () => {
-        searchWindow.webContents.executeJavaScript(
-            `
-            var script = document.createElement('script');
-            script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js";
-            document.getElementsByTagName('head')[0].appendChild(script);
-
-            setTimeout(() => {
-                var rows = [];
-                var $headers = $("th").clone(true);
-                $headers.text(function(index, text) { return text.substring(0, text.length-5).toLowerCase()});
-                var $rows = $("tbody tr").each(function(index) {
-                    $cells = $(this).find("td");
-                    rows[index] = {};
-                    $cells.each(function(cellIndex) {
-                        rows[index][$($headers[cellIndex]).text()] = $(this).text();
-                    });    
-                });
-
-                var table = {};
-                table = rows;
-                require('electron').ipcRenderer.send('documentResult', table);
-            }, 1000);
-        `
-        );
-    });
-}
-
-ipcMain.on('reloadData', (event, data) => {
-    createScrapingWindow(data);
-});
-
-ipcMain.on('documentResult', (event, data) => {
-    data.shift();
-    win.webContents.send('updateTable', data);
-});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

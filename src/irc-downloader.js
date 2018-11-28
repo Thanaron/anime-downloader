@@ -1,9 +1,9 @@
 const ircXdcc = require('irc-xdcc');
 const log = require('electron-log');
 
-export default class Downloader {
-    constructor(list) {
-        this.list = list;
+export default class IrcDownloader {
+    constructor(episodesToDownload) {
+        this.episodesToDownload = episodesToDownload;
     }
 
     async connect() {
@@ -26,7 +26,7 @@ export default class Downloader {
     }
 
     download() {
-        this.list.forEach(pack => {
+        this.episodesToDownload.forEach(pack => {
             this.instance
                 .xdcc({ botNick: pack.bot, packId: pack.pack })
                 .then(xdccInstance => {
