@@ -24,67 +24,58 @@
                 >Search</button>
             </div>
         </div>
-            <div class="column is-10 is-offset-1">
-                <b-table
-                    :checked-rows.sync="checkedRows"
-                    :columns="columns"
-                    :data="data"
-                    :loading="loading"
-                    :mobile-cards="false"
-                    checkable
-                    focusable
-                    striped
-                />
-            </div>
+        <div class="result-table">
+            <b-table
+                :checked-rows.sync="checkedRows"
+                :data="data.length > 0 ? data : []"
+                :loading="loading"
+                checkable
+                striped
+                :paginated="data.length > 0"
+                per-page="12"
+            >
+                <template slot-scope="props">
+                    <b-table-column field="bot" label="Bot" sortable width="200">{{ props.row.bot }}</b-table-column>
+                    <b-table-column field="name" label="Name" sortable centered>{{ props.row.name }}</b-table-column>
+                    <b-table-column
+                        field="episode"
+                        label="Episode"
+                        sortable
+                        numeric
+                        width="30"
+                    >{{ props.row.episode }}</b-table-column>
+                    <b-table-column
+                        field="resolution"
+                        label="Resolution"
+                        numeric
+                        width="100"
+                    >{{ props.row.resolution }}p</b-table-column>
+                </template>
+
+                <template slot="bottom-left">
+                    <button
+                        v-if="checkedRows.length > 0"
+                        class="button has-background-link has-text-white"
+                        @click="download"
+                    >Download {{ checkedRows.length }} episodes</button>
+                </template>
+            </b-table>
         </div>
-        <button
-            v-if="checkedRows.length > 0"
-            class="button has-background-link has-text-white"
-            style="position: fixed; bottom: 10px; right: 10px;"
-            @click="download"
-        >Download {{ checkedRows.length }} episodes</button>
     </div>
 </template>
 <script>
 import Download from '../components/Download.vue';
-
-const { ipcRenderer } = require('electron');
+import Packlist from '../packlist';
 
 export default {
     data() {
         return {
             loading: false,
             data: [],
-            columns: [
-                {
-                    field: 'bot',
-                    label: 'Bot',
-                    sortable: true,
-                },
-                {
-                    field: 'filename',
-                    label: 'Filename',
-                    sortable: true,
-                },
-                {
-                    field: 'pack',
-                    label: 'Pack',
-                    numeric: true,
-                },
-                {
-                    field: 'size',
-                    label: 'Size',
-                },
-            ],
             checkedRows: [],
             selectedQuality: '1080',
+            searchInput: '',
         };
-    },
-    mounted() {
-        ipcRenderer.on('updateTable', (event, data) => {
-            this.data = data;
-            this.loading = false;
-        });
     },
     methods: {
         reload(name) {
@@ -93,10 +84,6 @@ export default {
             this.loading = true;
         },
         download() {
-            this.checkedRows.forEach(element => {
-                element.progress = 0;
-            });
-
             this.$modal.open({
                 parent: this,
                 component: Download,
@@ -107,3 +94,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.result-table {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+</style>

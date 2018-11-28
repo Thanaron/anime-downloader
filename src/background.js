@@ -22,7 +22,10 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         width: 800,
-        height: 600,
+        height: 770,
+        minWidth: 800,
+        minHeight: 770,
+        maxHeight: 770,
         title: `HorribleSubs Downloader - Version ${app.getVersion()}`,
         webPreferences: {
             webSecurity: false,
