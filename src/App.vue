@@ -7,6 +7,7 @@
 <script>
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
+require('./renderer');
 
 export default {
     created() {

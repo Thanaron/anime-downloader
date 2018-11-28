@@ -24,7 +24,7 @@ function createWindow() {
         height: 770,
         minWidth: 800,
         minHeight: 770,
-        maxHeight: 770,
+        frame: false,
         title: `HorribleSubs Downloader - Version ${app.getVersion()}`,
         webPreferences: {
             webSecurity: false,
