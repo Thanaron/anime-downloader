@@ -7,9 +7,9 @@
                         v-model="searchInput"
                         expanded
                         placeholder="Search.."
-                        @keyup.enter.native="reload"
+                        @keyup.enter.native="search"
                     />
-                    <b-select v-model="selectedQuality" placeholder="Quality">
+                    <b-select v-model="selectedResolution" placeholder="Quality">
                         <option value="1080">1080p</option>
                         <option value="720">720p</option>
                         <option value="480">480p</option>
@@ -64,7 +64,7 @@
     </div>
 </template>
 <script>
-import Download from '../components/Download.vue';
+import DownloadProgressModal from '../components/DownloadProgressModal.vue';
 import Packlist from '../packlist';
 
 export default {
@@ -73,16 +73,16 @@ export default {
             loading: false,
             data: [],
             checkedRows: [],
-            selectedQuality: '1080',
+            selectedResolution: '1080',
             searchInput: '',
         };
     },
     methods: {
-        reload() {
+        search() {
             this.loading = true;
             const searchData = {
                 name: this.searchInput,
-                resolution: this.selectedQuality,
+                resolution: this.selectedResolution,
             };
             Packlist.search(searchData).then(result => {
                 this.data = result;
@@ -92,7 +92,7 @@ export default {
         download() {
             this.$modal.open({
                 parent: this,
-                component: Download,
+                component: DownloadProgressModal,
                 hasModalCard: true,
                 props: { list: this.checkedRows },
             });

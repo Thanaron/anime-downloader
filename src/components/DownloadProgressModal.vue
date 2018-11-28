@@ -32,14 +32,14 @@
 </template>
 
 <script>
-import Downloader from '../xdcc';
+import IrcDownloader from '../irc-downloader';
 
 export default {
-    name: 'DownloadModal',
+    name: 'DownloadProgressModal',
     props: ['list'],
     data() {
         return {
-            downloadList: [],
+            episodesToDownload: [],
             downloadStarted: false,
         };
     },
@@ -58,7 +58,7 @@ export default {
     },
     computed: {
         allFinished() {
-            return this.downloadList.every(
+            return this.episodesToDownload.every(
                 element => element.finished === true
             );
         },
@@ -66,28 +66,21 @@ export default {
     methods: {
         async performDownload() {
             this.downloadStarted = true;
-            const downloader = new Downloader(this.downloadList);
+            const downloader = new IrcDownloader(this.episodesToDownload);
             await downloader.connect();
             downloader.download();
 
-            downloader.instance.on(
-                'xdcc-progress',
-                (xdccInstance, received) => {
-                    const entry = this.downloadList.find(
-                        element =>
-                            xdccInstance.xdccInfo.fileName.includes(
-                                element.name
-                            ) &&
-                            xdccInstance.xdccInfo.fileName.includes(
-                                element.episode
-                            )
-                    );
-                    entry.progress = xdccInstance.xdccInfo.progress;
-                }
-            );
+            downloader.instance.on('xdcc-progress', xdccInstance => {
+                const entry = this.episodesToDownload.find(
+                    element =>
+                        xdccInstance.xdccInfo.fileName.includes(element.name) &&
+                        xdccInstance.xdccInfo.fileName.includes(element.episode)
+                );
+                entry.progress = xdccInstance.xdccInfo.progress;
+            });
 
             downloader.instance.on('xdcc-complete', xdccInstance => {
-                const entry = this.downloadList.find(
+                const entry = this.episodesToDownload.find(
                     element =>
                         xdccInstance.xdccInfo.fileName.includes(element.name) &&
                         xdccInstance.xdccInfo.fileName.includes(element.episode)
