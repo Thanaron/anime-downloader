@@ -78,10 +78,16 @@ export default {
         };
     },
     methods: {
-        reload(name) {
-            const quality = this.selectedQuality;
-            ipcRenderer.send('searchAnime', name);
+        reload() {
             this.loading = true;
+            const searchData = {
+                name: this.searchInput,
+                resolution: this.selectedQuality,
+            };
+            Packlist.search(searchData).then(result => {
+                this.data = result;
+                this.loading = false;
+            });
         },
         download() {
             this.$modal.open({
