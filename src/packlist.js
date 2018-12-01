@@ -1,8 +1,10 @@
 const axios = require('axios');
 const log = require('electron-log');
+const { uniqBy } = require('lodash');
 
 export default class Packlist {
     static search(searchData) {
+        log.debug(`Requesting data for ${JSON.stringify(searchData)}`);
         return axios
             .get(
                 `http://xdcc.horriblesubs.info/search.php?t=${searchData.name} ${
@@ -35,5 +37,9 @@ export default class Packlist {
             resolution: parseInt(match[6], 10),
             extension: match[7],
         };
+    }
+
+    static showUniqueEpisodesOnly(results) {
+        return uniqBy(results, 'episode');
     }
 }

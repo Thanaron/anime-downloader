@@ -129,7 +129,9 @@ export default {
                 this.data = result;
                 this.loading = false;
 
-                Packlist.groupByEpisode(this.data);
+                if (this.$store.getters.uniqueEpisodesOnly) {
+                    this.data = Packlist.showUniqueEpisodesOnly(this.data);
+                }
             });
         },
         download() {

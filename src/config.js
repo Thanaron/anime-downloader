@@ -5,12 +5,12 @@ const defaults = {
         visibleColumns: ['name', 'episode', 'resolution', 'size'],
         autoDownload: false,
         autoCheckUpdate: true,
+        uniqueEpisodesOnly: true,
     },
 };
 
 const store = new Store({
     defaults,
-    name: 'hs-downloader.config',
 });
 
 export default store;

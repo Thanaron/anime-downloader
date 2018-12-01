@@ -10,6 +10,7 @@ export default new Vuex.Store({
         visibleColumns: [],
         autoDownload: false,
         autoCheckUpdate: true,
+        uniqueEpisodesOnly: true,
     },
     getters: {
         visibleColumns(state) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
         },
         autoCheckUpdate(state) {
             return state.autoCheckUpdate;
+        },
+        uniqueEpisodesOnly(state) {
+            return state.uniqueEpisodesOnly;
         },
     },
     mutations: {
@@ -35,13 +39,17 @@ export default new Vuex.Store({
             Vue.set(state, 'autoCheckUpdate', value);
             store.set('config.autoCheckUpdate', value);
         },
+        setUniqueEpisodesOnly(state, value) {
+            Vue.set(state, 'uniqueEpisodesOnly', value);
+            store.set('config.uniqueEpisodesOnly', value);
+        },
     },
-    actions: {},
     actions: {
         loadCurrentSettings({ commit }) {
             commit('setVisibleColumns', store.get('config.visibleColumns'));
             commit('setAutoDownload', store.get('config.autoDownload'));
             commit('setAutoCheckUpdate', store.get('config.autoCheckUpdate'));
+            commit('setUniqueEpisodesOnly', store.get('config.uniqueEpisodesOnly'));
         },
     },
 });

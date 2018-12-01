@@ -33,14 +33,18 @@
                         >Search</p>
                         <div style="margin-bottom: 10px">
                             <b-field label="General">
-                                <b-checkbox>Only show one result per episode</b-checkbox>
-                            </b-field>
+                                <b-checkbox
+                                    v-model="uniqueEpisodesOnly"
                                 >Only show one result per episode</b-checkbox>
                             </b-field>
                         </div>
                         <div>
                             <b-field label="Visible columns">
-                                <b-checkbox v-model="visibleColumns" native-value="bot">Bot</b-checkbox>
+                                <b-checkbox
+                                    v-model="visibleColumns"
+                                    :disabled="!uniqueEpisodesOnly"
+                                    native-value="bot"
+                                >Bot</b-checkbox>
                             </b-field>
                             <b-field>
                                 <b-checkbox v-model="visibleColumns" native-value="name">Name</b-checkbox>
@@ -103,6 +107,20 @@ export default {
             },
             set(val) {
                 this.$store.commit('setAutoCheckUpdate', val);
+            },
+        },
+        uniqueEpisodesOnly: {
+            get() {
+                return this.$store.getters.uniqueEpisodesOnly;
+            },
+            set(val) {
+                if (!val && !this.visibleColumns.includes('bot')) {
+                    this.visibleColumns.push('bot');
+                } else if (val && this.visibleColumns.includes('bot')) {
+                    const index = this.visibleColumns.indexOf('bot');
+                    this.visibleColumns.splice(index, 1);
+                }
+                this.$store.commit('setUniqueEpisodesOnly', val);
             },
         },
     },
