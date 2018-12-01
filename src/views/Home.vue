@@ -1,7 +1,14 @@
 <template>
     <div style="margin-top: 20px;">
-        <div class="columns">
-            <div class="column is-offset-1 is-8">
+        <div class="columns" style="margin-left: 10px; margin-right: 10px;">
+            <div class="column is-narrow">
+                <a class="button is-primary is-inverted" style="border: 0" @click="openSettings">
+                    <span class="icon is-small">
+                        <i class="mdi mdi-36px mdi-settings"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="column">
                 <b-field>
                     <b-input
                         v-model="searchInput"
@@ -16,7 +23,7 @@
                     </b-select>
                 </b-field>
             </div>
-            <div class="column is-2">
+            <div class="column is-narrow">
                 <button
                     :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
                     :disabled="loading"
