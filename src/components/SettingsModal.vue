@@ -14,6 +14,11 @@
                         <b-field>
                             <b-checkbox v-model="autoDownload">Automatically start downloading</b-checkbox>
                         </b-field>
+                        <b-field label="Download folder"></b-field>
+                        <b-field>
+                            <b-input expanded v-model="downloadPath"></b-input>
+                            <button class="button">...</button>
+                        </b-field>
                         <hr>
                         <p
                             class="has-text-weight-semibold is-size-5"
@@ -95,7 +100,7 @@ export default {
                 if (val.length === 0) {
                     return;
                 }
-                this.$store.commit('setVisibleColumns', val);
+                this.$store.dispatch('setVisibleColumns', val);
             },
         },
         autoDownload: {
@@ -103,7 +108,7 @@ export default {
                 return this.$store.getters.autoDownload;
             },
             set(val) {
-                this.$store.commit('setAutoDownload', val);
+                this.$store.dispatch('setAutoDownload', val);
             },
         },
         autoCheckUpdate: {
@@ -111,7 +116,7 @@ export default {
                 return this.$store.getters.autoCheckUpdate;
             },
             set(val) {
-                this.$store.commit('setAutoCheckUpdate', val);
+                this.$store.dispatch('setAutoCheckUpdate', val);
             },
         },
         uniqueEpisodesOnly: {
@@ -125,7 +130,15 @@ export default {
                     const index = this.visibleColumns.indexOf('bot');
                     this.visibleColumns.splice(index, 1);
                 }
-                this.$store.commit('setUniqueEpisodesOnly', val);
+                this.$store.dispatch('setUniqueEpisodesOnly', val);
+            },
+        },
+        downloadPath: {
+            get() {
+                return this.$store.getters.downloadPath;
+            },
+            set(val) {
+                this.$store.dispatch('setDownloadPath', val);
             },
         },
     },

@@ -74,7 +74,10 @@ export default {
             this.downloadStarted = true;
             this.allowedCloseOperations = [];
 
-            const downloader = new IrcDownloader(this.episodesToDownload);
+            const downloader = new IrcDownloader(
+                this.episodesToDownload,
+                this.$store.getters.downloadPath
+            );
             await downloader.connect();
             downloader.download();
 

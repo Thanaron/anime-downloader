@@ -11,6 +11,7 @@ export default new Vuex.Store({
         autoDownload: false,
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,
+        downloadPath: '',
     },
     getters: {
         visibleColumns(state) {
@@ -25,23 +26,25 @@ export default new Vuex.Store({
         uniqueEpisodesOnly(state) {
             return state.uniqueEpisodesOnly;
         },
+        downloadPath(state) {
+            return state.downloadPath;
+        },
     },
     mutations: {
         setVisibleColumns(state, visibleColumns) {
             Vue.set(state, 'visibleColumns', visibleColumns);
-            store.set('config.visibleColumns', visibleColumns);
         },
         setAutoDownload(state, value) {
             Vue.set(state, 'autoDownload', value);
-            store.set('config.autoDownload', value);
         },
         setAutoCheckUpdate(state, value) {
             Vue.set(state, 'autoCheckUpdate', value);
-            store.set('config.autoCheckUpdate', value);
         },
         setUniqueEpisodesOnly(state, value) {
             Vue.set(state, 'uniqueEpisodesOnly', value);
-            store.set('config.uniqueEpisodesOnly', value);
+        },
+        setDownloadPath(state, path) {
+            Vue.set(state, 'downloadPath', path);
         },
     },
     actions: {
@@ -50,6 +53,27 @@ export default new Vuex.Store({
             commit('setAutoDownload', store.get('config.autoDownload'));
             commit('setAutoCheckUpdate', store.get('config.autoCheckUpdate'));
             commit('setUniqueEpisodesOnly', store.get('config.uniqueEpisodesOnly'));
+            commit('setDownloadPath', store.get('config.downloadPath'));
+        },
+        setVisibleColumns({ commit }, visibleColumns) {
+            commit('setVisibleColumns', visibleColumns);
+            store.set('config.visibleColumns', visibleColumns);
+        },
+        setAutoDownload({ commit }, value) {
+            commit('setAutoDownload', value);
+            store.set('config.autoDownload', value);
+        },
+        setAutoCheckUpdate({ commit }, value) {
+            commit('setAutoCheckUpdate', value);
+            store.set('config.autoCheckUpdate', value);
+        },
+        setUniqueEpisodesOnly({ commit }, value) {
+            commit('setUniqueEpisodesOnly', value);
+            store.set('config.uniqueEpisodesOnly', value);
+        },
+        setDownloadPath({ commit }, path) {
+            commit('setDownloadPath', path);
+            store.set('config.downloadPath', path);
         },
     },
 });

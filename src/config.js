@@ -1,4 +1,5 @@
 const Store = require('electron-store');
+const { app } = require('electron').remote;
 
 const defaults = {
     config: {
@@ -6,6 +7,7 @@ const defaults = {
         autoDownload: false,
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,
+        downloadPath: app.getPath('downloads'),
     },
 };
 
