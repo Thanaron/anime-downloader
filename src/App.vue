@@ -12,6 +12,9 @@ export default {
     created() {
         unhandled({ logger: log.error });
     },
+    mounted() {
+        this.$store.dispatch('loadCurrentSettings');
+    },
 };
 </script>
 

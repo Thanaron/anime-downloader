@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        visibleColumns: ['bot', 'name', 'episode', 'resolution'],
+        visibleColumns: [],
         autoDownload: false,
         autoCheckUpdate: true,
     },
@@ -37,4 +37,11 @@ export default new Vuex.Store({
         },
     },
     actions: {},
+    actions: {
+        loadCurrentSettings({ commit }) {
+            commit('setVisibleColumns', store.get('config.visibleColumns'));
+            commit('setAutoDownload', store.get('config.autoDownload'));
+            commit('setAutoCheckUpdate', store.get('config.autoCheckUpdate'));
+        },
+    },
 });
