@@ -3,7 +3,6 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <div class="modal-card-title">Settings</div>
-                <button class="button" disabled>Restore defaults</button>
             </header>
             <section class="modal-card-body">
                 <div class="columns">
@@ -36,13 +35,7 @@
                             <b-field label="General">
                                 <b-checkbox>Only show one result per episode</b-checkbox>
                             </b-field>
-                            <b-field label="Filter by resolution">
-                                <b-select placeholder="Select resolution">
-                                    <option value="0">Show all</option>
-                                    <option value="1080">1080p</option>
-                                    <option value="720">720p</option>
-                                    <option value="480">480p</option>
-                                </b-select>
+                                >Only show one result per episode</b-checkbox>
                             </b-field>
                         </div>
                         <div>
@@ -66,12 +59,6 @@
                             </b-field>
                             <b-field>
                                 <b-checkbox v-model="visibleColumns" native-value="size">Size</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox
-                                    v-model="visibleColumns"
-                                    native-value="extension"
-                                >Extension</b-checkbox>
                             </b-field>
                         </div>
                     </div>

@@ -85,13 +85,6 @@
                         width="100"
                         :visible="visibleColumns.includes('size')"
                     >{{ props.row.size }} MB</b-table-column>
-                    <b-table-column
-                        field="extension"
-                        label="Extension"
-                        numeric
-                        width="100"
-                        :visible="visibleColumns.includes('extension')"
-                    >.{{ props.row.extension }}</b-table-column>
                 </template>
 
                 <template slot="bottom-left">
