@@ -2,7 +2,7 @@ const Store = require('electron-store');
 
 const defaults = {
     config: {
-        visibleColumns: ['name', 'episode', 'resolution'],
+        visibleColumns: ['name', 'episode', 'resolution', 'size'],
         autoDownload: false,
         autoCheckUpdate: true,
     },

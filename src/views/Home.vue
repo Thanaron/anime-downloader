@@ -16,6 +16,11 @@
                         placeholder="Search.."
                         @keyup.enter.native="search"
                     />
+                    <b-select v-model="selectedResolution" placeholder="Select resolution">
+                        <option value="1080">1080p</option>
+                        <option value="720">720p</option>
+                        <option value="480">480p</option>
+                    </b-select>
                 </b-field>
             </div>
             <div class="column is-narrow">
@@ -33,6 +38,7 @@
                 :loading="loading"
                 checkable
                 striped
+                :default-sort="['episode', 'asc']"
                 :paginated="data.length > 0"
                 per-page="12"
             >
@@ -48,7 +54,6 @@
                         field="name"
                         label="Name"
                         sortable
-                        centered
                         :visible="visibleColumns.includes('name')"
                     >{{ props.row.name }}</b-table-column>
                     <b-table-column
