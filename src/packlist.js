@@ -1,6 +1,6 @@
 const axios = require('axios');
 const log = require('electron-log');
-const { uniqBy } = require('lodash');
+const _ = require('lodash');
 
 export default class Packlist {
     static search(searchData) {
@@ -15,6 +15,10 @@ export default class Packlist {
             .then(data => data.split(/[\r\n]+/))
             .then(text => text.map(Packlist.parseLine))
             .then(result => result.filter(entry => entry !== null))
+            .then(result => _.sortBy(result, ['name', 'episode']))
+            .then(result =>
+                searchData.uniqueEpisodes ? Packlist.showUniqueEpisodesOnly(result) : result
+            )
             .catch(error => {
                 log.error(error);
             });
@@ -40,6 +44,9 @@ export default class Packlist {
     }
 
     static showUniqueEpisodesOnly(results) {
-        return uniqBy(results, 'episode');
+        let list = _.groupBy(results, 'name');
+        list = Object.values(list);
+        const output = list.map(series => _.uniqBy(series, 'episode'));
+        return _.flatten(output);
     }
 }
