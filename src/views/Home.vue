@@ -16,11 +16,6 @@
                         placeholder="Search.."
                         @keyup.enter.native="search"
                     />
-                    <b-select v-model="selectedResolution" placeholder="Quality">
-                        <option value="1080">1080p</option>
-                        <option value="720">720p</option>
-                        <option value="480">480p</option>
-                    </b-select>
                 </b-field>
             </div>
             <div class="column is-narrow">
@@ -42,21 +37,56 @@
                 per-page="12"
             >
                 <template slot-scope="props">
-                    <b-table-column field="bot" label="Bot" sortable width="200">{{ props.row.bot }}</b-table-column>
-                    <b-table-column field="name" label="Name" sortable centered>{{ props.row.name }}</b-table-column>
+                    <b-table-column
+                        field="bot"
+                        label="Bot"
+                        sortable
+                        width="200"
+                        :visible="visibleColumns.includes('bot')"
+                    >{{ props.row.bot }}</b-table-column>
+                    <b-table-column
+                        field="name"
+                        label="Name"
+                        sortable
+                        centered
+                        :visible="visibleColumns.includes('name')"
+                    >{{ props.row.name }}</b-table-column>
                     <b-table-column
                         field="episode"
                         label="Episode"
                         sortable
                         numeric
                         width="30"
+                        :visible="visibleColumns.includes('episode')"
                     >{{ props.row.episode }}</b-table-column>
                     <b-table-column
                         field="resolution"
                         label="Resolution"
                         numeric
                         width="100"
+                        :visible="visibleColumns.includes('resolution')"
                     >{{ props.row.resolution }}p</b-table-column>
+                    <b-table-column
+                        field="pack"
+                        label="Pack"
+                        numeric
+                        width="100"
+                        :visible="visibleColumns.includes('pack')"
+                    >{{ props.row.pack }}</b-table-column>
+                    <b-table-column
+                        field="size"
+                        label="Size"
+                        numeric
+                        width="100"
+                        :visible="visibleColumns.includes('size')"
+                    >{{ props.row.size }} MB</b-table-column>
+                    <b-table-column
+                        field="extension"
+                        label="Extension"
+                        numeric
+                        width="100"
+                        :visible="visibleColumns.includes('extension')"
+                    >.{{ props.row.extension }}</b-table-column>
                 </template>
 
                 <template slot="bottom-left">
@@ -72,6 +102,7 @@
 </template>
 <script>
 import DownloadProgressModal from '../components/DownloadProgressModal.vue';
+import SettingsModal from '../components/SettingsModal.vue';
 import Packlist from '../packlist';
 
 export default {
@@ -84,6 +115,11 @@ export default {
             searchInput: '',
         };
     },
+    computed: {
+        visibleColumns() {
+            return this.$store.getters.visibleColumns;
+        },
+    },
     methods: {
         search() {
             this.loading = true;
@@ -94,6 +130,8 @@ export default {
             Packlist.search(searchData).then(result => {
                 this.data = result;
                 this.loading = false;
+
+                Packlist.groupByEpisode(this.data);
             });
         },
         download() {
@@ -102,6 +140,13 @@ export default {
                 component: DownloadProgressModal,
                 hasModalCard: true,
                 props: { list: this.checkedRows },
+            });
+        },
+        openSettings() {
+            this.$modal.open({
+                parent: this,
+                component: SettingsModal,
+                hasModalCard: true,
             });
         },
     },
