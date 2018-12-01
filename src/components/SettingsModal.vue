@@ -33,9 +33,14 @@
                         >Search</p>
                         <div style="margin-bottom: 10px">
                             <b-field label="General">
-                                <b-checkbox
-                                    v-model="uniqueEpisodesOnly"
-                                >Only show one result per episode</b-checkbox>
+                                <b-tooltip
+                                    multilined
+                                    label="Disable if you want to only download from certain bots"
+                                >
+                                    <b-checkbox
+                                        v-model="uniqueEpisodesOnly"
+                                    >Only show one result per episode</b-checkbox>
+                                </b-tooltip>
                             </b-field>
                         </div>
                         <div>

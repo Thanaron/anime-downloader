@@ -38,7 +38,6 @@
                 :loading="loading"
                 checkable
                 striped
-                :default-sort="['episode', 'asc']"
                 :paginated="data.length > 0"
                 per-page="12"
             >
@@ -53,13 +52,11 @@
                     <b-table-column
                         field="name"
                         label="Name"
-                        sortable
                         :visible="visibleColumns.includes('name')"
                     >{{ props.row.name }}</b-table-column>
                     <b-table-column
                         field="episode"
                         label="Episode"
-                        sortable
                         numeric
                         width="30"
                         :visible="visibleColumns.includes('episode')"
@@ -124,14 +121,11 @@ export default {
             const searchData = {
                 name: this.searchInput,
                 resolution: this.selectedResolution,
+                uniqueEpisodes: this.$store.getters.uniqueEpisodesOnly,
             };
             Packlist.search(searchData).then(result => {
                 this.data = result;
                 this.loading = false;
-
-                if (this.$store.getters.uniqueEpisodesOnly) {
-                    this.data = Packlist.showUniqueEpisodesOnly(this.data);
-                }
             });
         },
         download() {
