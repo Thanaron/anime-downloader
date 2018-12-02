@@ -65,7 +65,7 @@ export default {
         },
     },
     mounted() {
-        if (this.$store.getters.autoDownload) {
+        if (this.$store.state.autoDownload) {
             this.performDownload();
         }
     },
@@ -76,7 +76,7 @@ export default {
 
             const downloader = new IrcDownloader(
                 this.episodesToDownload,
-                this.$store.getters.downloadPath
+                this.$store.state.downloadPath
             );
             await downloader.connect();
             downloader.download();

@@ -74,7 +74,7 @@
                         numeric
                         width="100"
                         :visible="visibleColumns.includes('pack')"
-                    >{{ props.row.pack }}</b-table-column>
+                    >#{{ props.row.pack }}</b-table-column>
                     <b-table-column
                         field="size"
                         label="Size"
@@ -112,7 +112,7 @@ export default {
     },
     computed: {
         visibleColumns() {
-            return this.$store.getters.visibleColumns;
+            return this.$store.state.visibleColumns;
         },
     },
     methods: {
@@ -121,7 +121,7 @@ export default {
             const searchData = {
                 name: this.searchInput,
                 resolution: this.selectedResolution,
-                uniqueEpisodes: this.$store.getters.uniqueEpisodesOnly,
+                uniqueEpisodes: this.$store.state.uniqueEpisodesOnly,
             };
             Packlist.search(searchData).then(result => {
                 this.data = result;

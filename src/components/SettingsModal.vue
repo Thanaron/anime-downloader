@@ -40,7 +40,7 @@
                             <b-field label="General">
                                 <b-tooltip
                                     multilined
-                                    label="Disable if you want to only download from certain bots"
+                                    label="Disable if you want to choose the bot to download from"
                                 >
                                     <b-checkbox
                                         v-model="uniqueEpisodesOnly"
@@ -88,63 +88,63 @@
 <script>
 export default {
     name: 'SettingsModal',
-    data() {
-        return {};
-    },
     computed: {
         visibleColumns: {
             get() {
-                return this.$store.getters.visibleColumns;
+                return this.$store.state.visibleColumns;
             },
-            set(val) {
-                if (val.length === 0) {
+            set(value) {
+                if (value.length === 0) {
                     return;
                 }
-                this.$store.dispatch('setVisibleColumns', val);
+                this.updateItem('visibleColumns', value);
             },
         },
         autoDownload: {
             get() {
-                return this.$store.getters.autoDownload;
+                return this.$store.state.autoDownload;
             },
-            set(val) {
-                this.$store.dispatch('setAutoDownload', val);
+            set(value) {
+                this.updateItem('autoDownload', value);
             },
         },
         autoCheckUpdate: {
             get() {
-                return this.$store.getters.autoCheckUpdate;
+                return this.$store.state.autoCheckUpdate;
             },
-            set(val) {
-                this.$store.dispatch('setAutoCheckUpdate', val);
+            set(value) {
+                this.updateItem('autoCheckItem', value);
             },
         },
         uniqueEpisodesOnly: {
             get() {
-                return this.$store.getters.uniqueEpisodesOnly;
+                return this.$store.state.uniqueEpisodesOnly;
             },
-            set(val) {
-                if (!val && !this.visibleColumns.includes('bot')) {
+            set(value) {
+                if (!value && !this.visibleColumns.includes('bot')) {
                     this.visibleColumns.push('bot');
-                } else if (val && this.visibleColumns.includes('bot')) {
+                } else if (value && this.visibleColumns.includes('bot')) {
                     const index = this.visibleColumns.indexOf('bot');
                     this.visibleColumns.splice(index, 1);
                 }
-                this.$store.dispatch('setUniqueEpisodesOnly', val);
+                this.updateItem('uniqueEpisodesOnly', value);
             },
         },
         downloadPath: {
             get() {
-                return this.$store.getters.downloadPath;
+                return this.$store.state.downloadPath;
             },
-            set(val) {
-                this.$store.dispatch('setDownloadPath', val);
+            set(value) {
+                this.updateItem('downloadPath', value);
             },
         },
     },
     methods: {
         closeModal() {
             this.$parent.close();
+        },
+        updateItem(key, value) {
+            this.$store.dispatch('set', { key, value });
         },
     },
 };

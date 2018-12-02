@@ -13,67 +13,38 @@ export default new Vuex.Store({
         uniqueEpisodesOnly: true,
         downloadPath: '',
     },
-    getters: {
-        visibleColumns(state) {
-            return state.visibleColumns;
-        },
-        autoDownload(state) {
-            return state.autoDownload;
-        },
-        autoCheckUpdate(state) {
-            return state.autoCheckUpdate;
-        },
-        uniqueEpisodesOnly(state) {
-            return state.uniqueEpisodesOnly;
-        },
-        downloadPath(state) {
-            return state.downloadPath;
-        },
-    },
     mutations: {
-        setVisibleColumns(state, visibleColumns) {
-            Vue.set(state, 'visibleColumns', visibleColumns);
-        },
-        setAutoDownload(state, value) {
-            Vue.set(state, 'autoDownload', value);
-        },
-        setAutoCheckUpdate(state, value) {
-            Vue.set(state, 'autoCheckUpdate', value);
-        },
-        setUniqueEpisodesOnly(state, value) {
-            Vue.set(state, 'uniqueEpisodesOnly', value);
-        },
-        setDownloadPath(state, path) {
-            Vue.set(state, 'downloadPath', path);
+        set(state, data) {
+            Vue.set(state, data.key, data.value);
         },
     },
     actions: {
         loadCurrentSettings({ commit }) {
-            commit('setVisibleColumns', store.get('config.visibleColumns'));
-            commit('setAutoDownload', store.get('config.autoDownload'));
-            commit('setAutoCheckUpdate', store.get('config.autoCheckUpdate'));
-            commit('setUniqueEpisodesOnly', store.get('config.uniqueEpisodesOnly'));
-            commit('setDownloadPath', store.get('config.downloadPath'));
+            const { config } = store.store;
+            commit('set', {
+                key: 'visibleColumns',
+                value: config.visibleColumns,
+            });
+            commit('set', {
+                key: 'autoDownload',
+                value: config.autoDownload,
+            });
+            commit('set', {
+                key: 'autoCheckUpdate',
+                value: config.autoCheckUpdate,
+            });
+            commit('set', {
+                key: 'uniqueEpisodesOnly',
+                value: config.uniqueEpisodesOnly,
+            });
+            commit('set', {
+                key: 'downloadPath',
+                value: config.downloadPath,
+            });
         },
-        setVisibleColumns({ commit }, visibleColumns) {
-            commit('setVisibleColumns', visibleColumns);
-            store.set('config.visibleColumns', visibleColumns);
-        },
-        setAutoDownload({ commit }, value) {
-            commit('setAutoDownload', value);
-            store.set('config.autoDownload', value);
-        },
-        setAutoCheckUpdate({ commit }, value) {
-            commit('setAutoCheckUpdate', value);
-            store.set('config.autoCheckUpdate', value);
-        },
-        setUniqueEpisodesOnly({ commit }, value) {
-            commit('setUniqueEpisodesOnly', value);
-            store.set('config.uniqueEpisodesOnly', value);
-        },
-        setDownloadPath({ commit }, path) {
-            commit('setDownloadPath', path);
-            store.set('config.downloadPath', path);
+        set({ commit }, data) {
+            commit('set', data);
+            store.set(`config.${data.key}`, data.value);
         },
     },
 });
