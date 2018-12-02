@@ -123,9 +123,11 @@ export default {
             set(value) {
                 if (!value && !this.visibleColumns.includes('bot')) {
                     this.visibleColumns.push('bot');
+                    this.updateItem('visibleColumns', this.visibleColumns);
                 } else if (value && this.visibleColumns.includes('bot')) {
                     const index = this.visibleColumns.indexOf('bot');
                     this.visibleColumns.splice(index, 1);
+                    this.updateItem('visibleColumns', this.visibleColumns);
                 }
                 this.updateItem('uniqueEpisodesOnly', value);
             },
