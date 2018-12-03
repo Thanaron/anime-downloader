@@ -1,5 +1,5 @@
 <template>
-    <b-modal active has-modal-card>
+    <b-modal active has-modal-card :canCancel="allowedCloseOperations" :onCancel="closeModal">
         <div class="modal-card">
             <header class="modal-card-head">
                 <div class="modal-card-title">Downloading episodes</div>
@@ -41,6 +41,7 @@ export default {
         return {
             episodesToDownload: [],
             downloadStarted: false,
+            allowedCloseOperations: ['x', 'outside', 'escape'],
         };
     },
     created() {
@@ -63,10 +64,21 @@ export default {
             );
         },
     },
+    mounted() {
+        if (this.$store.state.autoDownload) {
+            this.performDownload();
+        }
+    },
     methods: {
         async performDownload() {
             this.downloadStarted = true;
-            const downloader = new IrcDownloader(this.episodesToDownload);
+            this.allowedCloseOperations = [];
+
+            const downloader = new IrcDownloader(
+                this.episodesToDownload,
+                this.$store.state.downloadPath,
+                this.$store.state.username
+            );
             await downloader.connect();
             downloader.download();
 
@@ -87,9 +99,14 @@ export default {
                 );
                 entry.progress = 100;
                 entry.finished = true;
+
+                if (this.allFinished) {
+                    this.allowedCloseOperations = ['x', 'outside', 'escape'];
+                }
             });
         },
         cancelDownloads() {
+            // todo
             this.closeModal();
         },
         closeModal() {

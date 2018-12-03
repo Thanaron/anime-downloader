@@ -1,18 +1,18 @@
 const axios = require('axios');
 const log = require('electron-log');
+const _ = require('lodash');
 
 export default class Packlist {
-    static search(searchData) {
+    static search(input, resolution, uniqueEpisodes) {
+        log.debug(`Requesting data for ${input} with resolution ${resolution}`);
         return axios
-            .get(
-                `http://xdcc.horriblesubs.info/search.php?t=${searchData.name} ${
-                    searchData.resolution
-                }`
-            )
+            .get(`http://xdcc.horriblesubs.info/search.php?t=${input} ${resolution}`)
             .then(response => response.data)
             .then(data => data.split(/[\r\n]+/))
             .then(text => text.map(Packlist.parseLine))
             .then(result => result.filter(entry => entry !== null))
+            .then(result => _.sortBy(result, ['name', 'episode']))
+            .then(result => (uniqueEpisodes ? Packlist.showUniqueEpisodesOnly(result) : result))
             .catch(error => {
                 log.error(error);
             });
@@ -35,5 +35,12 @@ export default class Packlist {
             resolution: parseInt(match[6], 10),
             extension: match[7],
         };
+    }
+
+    static showUniqueEpisodesOnly(results) {
+        let list = _.groupBy(results, 'name');
+        list = Object.values(list);
+        const output = list.map(series => _.uniqBy(series, 'episode'));
+        return _.flatten(output);
     }
 }
