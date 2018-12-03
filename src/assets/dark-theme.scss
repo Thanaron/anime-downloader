@@ -1,0 +1,67 @@
+@import '~bulma/sass/utilities/_all';
+@import '../../node_modules/nord/src/sass/nord.scss';
+
+$body-background-color: $nord0;
+
+$black: $nord0;
+$black-bis: $nord1;
+$black-ter: $nord2;
+$grey-darker: $nord1;
+$grey-dark: $nord2;
+$grey: $nord15;
+$grey-light: $nord15;
+$grey-lighter: $nord15;
+$white-ter: $nord4;
+$white-bis: $nord5;
+$white: $nord6;
+$orange: $nord15;
+$yellow: $nord15;
+$green: $nord15;
+$turquoise: $nord15;
+$cyan: $nord15;
+$blue: $nord15;
+$purple: $nord15;
+$red: $nord11;
+
+$link: $nord15;
+
+$colors: (
+    'white': (
+        $white,
+        $black,
+    ),
+    'black': (
+        $black,
+        $white,
+    ),
+    'light': (
+        $light,
+        $light-invert,
+    ),
+    'dark': (
+        $dark,
+        $dark-invert,
+    ),
+    'primary': (
+        $nord14,
+        $primary-invert,
+    ),
+    'info': (
+        $info,
+        $info-invert,
+    ),
+    'success': (
+        $nord14,
+        $success-invert,
+    ),
+    'warning': (
+        $warning,
+        $warning-invert,
+    ),
+    'danger': (
+        $danger,
+        $danger-invert,
+    ),
+);
+@import '~bulma';
+@import '~buefy/src/scss/buefy';

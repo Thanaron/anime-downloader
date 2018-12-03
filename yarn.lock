@@ -7843,6 +7843,11 @@ nopt@^4.0.1, nopt@~4.0.1:
     abbrev "1"
     osenv "^0.1.4"
 
+nord@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/nord/-/nord-0.2.1.tgz#044ed8e00331c84a96dc4c670f080a72572c3cf9"
+  integrity sha1-BE7Y4AMxyEqW3ExnDwgKclcsPPk=
+
 normalize-package-data@^2.0.0, normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.4.0, "normalize-package-data@~1.0.1 || ^2.0.0", normalize-package-data@~2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.4.0.tgz#12f95a307d58352075a04907b84ac8be98ac012f"
