@@ -37,8 +37,8 @@
             :loading="loading"
             checkable
             striped
-                :paginated="data.length > 0"
-                per-page="12"
+            :mobile-cards="false"
+            class="result-table"
         >
             <template slot-scope="props">
                 <b-table-column
@@ -148,5 +148,8 @@ export default {
 .result-table {
     margin-left: 20px;
     margin-right: 20px;
+    height: calc(100vh - 100px);
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 </style>
