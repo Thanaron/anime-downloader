@@ -14,10 +14,9 @@
                         <b-field>
                             <b-checkbox v-model="autoDownload">Automatically start downloading</b-checkbox>
                         </b-field>
-                        <b-field label="Download folder"></b-field>
+                        <b-field label="Download path"></b-field>
                         <b-field>
                             <b-input expanded v-model="downloadPath"></b-input>
-                            <button class="button">...</button>
                         </b-field>
                         <hr>
                         <p

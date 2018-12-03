@@ -76,7 +76,8 @@ export default {
 
             const downloader = new IrcDownloader(
                 this.episodesToDownload,
-                this.$store.state.downloadPath
+                this.$store.state.downloadPath,
+                this.$store.state.username
             );
             await downloader.connect();
             downloader.download();

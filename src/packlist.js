@@ -3,22 +3,16 @@ const log = require('electron-log');
 const _ = require('lodash');
 
 export default class Packlist {
-    static search(searchData) {
-        log.debug(`Requesting data for ${JSON.stringify(searchData)}`);
+    static search(input, resolution, uniqueEpisodes) {
+        log.debug(`Requesting data for ${input} with resolution ${resolution}`);
         return axios
-            .get(
-                `http://xdcc.horriblesubs.info/search.php?t=${searchData.name} ${
-                    searchData.resolution
-                }`
-            )
+            .get(`http://xdcc.horriblesubs.info/search.php?t=${input} ${resolution}`)
             .then(response => response.data)
             .then(data => data.split(/[\r\n]+/))
             .then(text => text.map(Packlist.parseLine))
             .then(result => result.filter(entry => entry !== null))
             .then(result => _.sortBy(result, ['name', 'episode']))
-            .then(result =>
-                searchData.uniqueEpisodes ? Packlist.showUniqueEpisodesOnly(result) : result
-            )
+            .then(result => (uniqueEpisodes ? Packlist.showUniqueEpisodesOnly(result) : result))
             .catch(error => {
                 log.error(error);
             });

@@ -22,25 +22,9 @@ export default new Vuex.Store({
     actions: {
         loadCurrentSettings({ commit }) {
             const { config } = store.store;
-            commit('set', {
-                key: 'visibleColumns',
-                value: config.visibleColumns,
-            });
-            commit('set', {
-                key: 'autoDownload',
-                value: config.autoDownload,
-            });
-            commit('set', {
-                key: 'autoCheckUpdate',
-                value: config.autoCheckUpdate,
-            });
-            commit('set', {
-                key: 'uniqueEpisodesOnly',
-                value: config.uniqueEpisodesOnly,
-            });
-            commit('set', {
-                key: 'downloadPath',
-                value: config.downloadPath,
+
+            Object.entries(config).forEach(([key, value]) => {
+                commit('set', { key, value });
             });
         },
         set({ commit }, data) {

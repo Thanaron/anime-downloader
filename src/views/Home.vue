@@ -31,68 +31,66 @@
                 >Search</button>
             </div>
         </div>
-        <div class="result-table">
-            <b-table
-                :checked-rows.sync="checkedRows"
-                :data="data.length > 0 ? data : []"
-                :loading="loading"
-                checkable
-                striped
+        <b-table
+            :checked-rows.sync="checkedRows"
+            :data="data"
+            :loading="loading"
+            checkable
+            striped
                 :paginated="data.length > 0"
                 per-page="12"
-            >
-                <template slot-scope="props">
-                    <b-table-column
-                        field="bot"
-                        label="Bot"
-                        sortable
-                        width="200"
-                        :visible="visibleColumns.includes('bot')"
-                    >{{ props.row.bot }}</b-table-column>
-                    <b-table-column
-                        field="name"
-                        label="Name"
-                        :visible="visibleColumns.includes('name')"
-                    >{{ props.row.name }}</b-table-column>
-                    <b-table-column
-                        field="episode"
-                        label="Episode"
-                        numeric
-                        width="30"
-                        :visible="visibleColumns.includes('episode')"
-                    >{{ props.row.episode }}</b-table-column>
-                    <b-table-column
-                        field="resolution"
-                        label="Resolution"
-                        numeric
-                        width="100"
-                        :visible="visibleColumns.includes('resolution')"
-                    >{{ props.row.resolution }}p</b-table-column>
-                    <b-table-column
-                        field="pack"
-                        label="Pack"
-                        numeric
-                        width="100"
-                        :visible="visibleColumns.includes('pack')"
-                    >#{{ props.row.pack }}</b-table-column>
-                    <b-table-column
-                        field="size"
-                        label="Size"
-                        numeric
-                        width="100"
-                        :visible="visibleColumns.includes('size')"
-                    >{{ props.row.size }} MB</b-table-column>
-                </template>
+        >
+            <template slot-scope="props">
+                <b-table-column
+                    field="bot"
+                    label="Bot"
+                    sortable
+                    width="200"
+                    :visible="visibleColumns.includes('bot')"
+                >{{ props.row.bot }}</b-table-column>
+                <b-table-column
+                    field="name"
+                    label="Name"
+                    :visible="visibleColumns.includes('name')"
+                >{{ props.row.name }}</b-table-column>
+                <b-table-column
+                    field="episode"
+                    label="Episode"
+                    numeric
+                    width="30"
+                    :visible="visibleColumns.includes('episode')"
+                >{{ props.row.episode }}</b-table-column>
+                <b-table-column
+                    field="resolution"
+                    label="Resolution"
+                    numeric
+                    width="100"
+                    :visible="visibleColumns.includes('resolution')"
+                >{{ props.row.resolution }}p</b-table-column>
+                <b-table-column
+                    field="pack"
+                    label="Pack"
+                    numeric
+                    width="100"
+                    :visible="visibleColumns.includes('pack')"
+                >#{{ props.row.pack }}</b-table-column>
+                <b-table-column
+                    field="size"
+                    label="Size"
+                    numeric
+                    width="100"
+                    :visible="visibleColumns.includes('size')"
+                >{{ props.row.size }} MB</b-table-column>
+            </template>
 
-                <template slot="bottom-left">
-                    <button
-                        v-if="checkedRows.length > 0"
-                        class="button has-background-link has-text-white"
-                        @click="download"
-                    >Download {{ checkedRows.length }} episodes</button>
-                </template>
-            </b-table>
-        </div>
+            <template slot="bottom-left">
+                <button
+                    v-if="checkedRows.length > 0"
+                    class="button has-background-link has-text-white"
+                    @click="download"
+                >Download {{ checkedRows.length }} episodes</button>
+            </template>
+        </b-table>
     </div>
 </template>
 <script>
@@ -118,12 +116,11 @@ export default {
     methods: {
         search() {
             this.loading = true;
-            const searchData = {
-                name: this.searchInput,
-                resolution: this.selectedResolution,
-                uniqueEpisodes: this.$store.state.uniqueEpisodesOnly,
-            };
-            Packlist.search(searchData).then(result => {
+            Packlist.search(
+                this.searchInput,
+                this.selectedResolution,
+                this.$store.state.uniqueEpisodesOnly
+            ).then(result => {
                 this.data = result;
                 this.loading = false;
             });
