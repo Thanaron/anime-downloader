@@ -12,6 +12,7 @@ export default new Vuex.Store({
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,
         downloadPath: '',
+        username: '',
     },
     mutations: {
         set(state, data) {

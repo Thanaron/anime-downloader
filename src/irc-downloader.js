@@ -2,15 +2,15 @@ const ircXdcc = require('irc-xdcc');
 const log = require('electron-log');
 
 export default class IrcDownloader {
-    constructor(episodesToDownload, downloadPath) {
+    constructor(episodesToDownload, downloadPath, username) {
         this.episodesToDownload = episodesToDownload;
         this.downloadPath = downloadPath;
+        this.username = username;
     }
 
     async connect() {
-        ircXdcc('irc.rizon.net', 'pogchamp1', {
-            userName: 'pogchamp1',
-            realName: 'pogchamp2',
+        ircXdcc('irc.rizon.net', this.username || 'user', {
+            userName: this.username || 'user',
             channels: ['#horriblesubs'],
             destPath: this.downloadPath,
             autoConnect: true,
