@@ -25,6 +25,7 @@ function createWindow() {
         minWidth: 800,
         minHeight: 770,
         frame: false,
+        title: 'HS Downloader',
         webPreferences: {
             webSecurity: false,
         },
