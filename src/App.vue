@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div>
         <titlebar></titlebar>
         <div id="content">
             <router-view/>
@@ -9,7 +9,6 @@
 
 <script>
 import Titlebar from './components/Titlebar.vue';
-
 import SetupModal from './components/SetupModal.vue';
 
 const log = require('electron-log');
@@ -39,22 +38,9 @@ export default {
 </script>
 
 <style lang="scss">
-::-webkit-scrollbar {
-    display: none;
-}
-
-html,
-body,
-#app {
-    height: 100%;
-    margin: 0;
-}
-
 #content {
     height: calc(100% - 32px);
-    padding: 20px;
+    padding: 30px;
     overflow-y: auto;
 }
-
-@import './assets/dark-theme.scss';
 </style>

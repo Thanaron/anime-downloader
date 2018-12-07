@@ -34,15 +34,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '../../node_modules/nord/src/sass/nord.scss';
-
 #titlebar {
     display: block;
     position: fixed;
     height: 32px;
-    width: calc(100% - 1px); /*Compensate for body 1px border*/
+    width: 100%;
     padding: 4px;
-    color: $nord4;
+    @extend .has-text-black;
 }
 
 #titlebar #drag-region {
@@ -87,11 +85,11 @@ export default {
 }
 
 #window-controls .win-button:hover {
-    background: rgba($nord6, 0.2);
+    background: rgba($grey-darker, 0.2);
     opacity: 1;
 }
 #window-controls #close-button:hover {
-    background: #e81123;
+    @extend .has-background-danger;
 }
 #window-controls #restore-button {
     display: none;
@@ -101,8 +99,8 @@ export default {
     grid-column: 1;
     display: flex;
     align-items: center;
-    font-family: 'Segoe UI', sans-serif;
     font-size: 13px;
+    font-weight: 400;
     margin-left: 8px;
     overflow-x: hidden;
 }
