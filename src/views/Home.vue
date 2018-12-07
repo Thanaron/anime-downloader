@@ -1,11 +1,13 @@
 <template>
     <div style="margin-top: 20px;">
-        <div class="columns" style="margin-left: 10px; margin-right: 10px;">
-            <div class="column is-narrow">
-                <a class="button is-primary is-inverted" style="border: 0" @click="openSettings">
-                    <span class="icon is-small">
-                        <i class="mdi mdi-36px mdi-settings"></i>
-                    </span>
+        <div class="columns">
+            <div class="column is-narrow" v-if="checkedRows.length > 0">
+                <a
+                    class="button is-primary is-inverted has-background-white"
+                    style="border: 0"
+                    @click="downloadSelected"
+                >
+                    <b-icon pack="fas" icon="arrow-circle-down" size="is-medium"></b-icon>
                 </a>
             </div>
             <div class="column">
@@ -16,7 +18,7 @@
                         placeholder="Search.."
                         @keyup.enter.native="search"
                     />
-                    <b-select v-model="selectedResolution" placeholder="Select resolution">
+                    <b-select v-model="selectedResolution">
                         <option value="1080">1080p</option>
                         <option value="720">720p</option>
                         <option value="480">480p</option>
@@ -82,15 +84,16 @@
                     :visible="visibleColumns.includes('size')"
                 >{{ props.row.size }} MB</b-table-column>
             </template>
-
-            <template slot="bottom-left">
-                <button
-                    v-if="checkedRows.length > 0"
-                    class="button has-background-link has-text-white"
-                    @click="download"
-                >Download {{ checkedRows.length }} episodes</button>
-            </template>
         </b-table>
+        <div class="button-container">
+            <a
+                class="button is-primary is-inverted has-background-white download-button"
+                style="border: 0"
+                @click="openSettings"
+            >
+                <b-icon pack="fas" icon="cog" size="is-small"></b-icon>
+            </a>
+        </div>
     </div>
 </template>
 <script>
@@ -125,7 +128,7 @@ export default {
                 this.loading = false;
             });
         },
-        download() {
+        downloadSelected() {
             this.$modal.open({
                 parent: this,
                 component: DownloadProgressModal,
@@ -144,12 +147,22 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .result-table {
-    margin-left: 20px;
-    margin-right: 20px;
-    height: calc(100vh - 100px);
+    height: calc(95vh - 100px);
     box-sizing: border-box;
     overflow-y: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.download-button {
+    position: fixed;
+    bottom: -1px;
+    left: -1px;
 }
 </style>

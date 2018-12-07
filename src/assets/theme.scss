@@ -1,0 +1,63 @@
+@import '~bulma/sass/utilities/initial-variables';
+@import '~nord/src/sass/nord.scss';
+
+$black: $nord4;
+$black-bis: $nord11;
+$black-ter: $nord6;
+
+$grey-darker: $nord6;
+$grey-dark: $nord5;
+$grey: $nord6;
+$grey-light: $nord10;
+$grey-lighter: $nord3;
+
+$white-ter: $nord0;
+$white-bis: $nord1;
+$white: $nord0;
+
+$orange: $nord12;
+$yellow: $nord13;
+$green: $nord14;
+$turquoise: $nord10;
+$cyan: $nord8;
+$blue: $nord10;
+$purple: $nord15;
+$red: $nord11;
+
+$body-background-color: $white-ter;
+
+$input-background-color: $nord2;
+
+$modal-background-background-color: rgba($nord1, 0.85);
+
+$input-shadow: none;
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
+$body-family: 'Open Sans', sans-serif;
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: $nord0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: $nord2;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: $nord1;
+}
+
+select {
+    border-color: transparent;
+}
+
+@import '~bulma';
+@import '~buefy/src/scss/buefy';

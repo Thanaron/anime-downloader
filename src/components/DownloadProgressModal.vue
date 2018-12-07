@@ -5,11 +5,18 @@
                 <div class="modal-card-title">Downloading episodes</div>
             </header>
             <section class="modal-card-body">
-                <b-field
-                    v-for="entry in episodesToDownload"
-                    :label="entry.name + ' - ' + entry.episode"
-                    :key="entry.pack"
-                >
+                <b-field v-for="entry in episodesToDownload" :key="entry.pack" :addons="false">
+                    <div style="width: 100%">
+                        <span
+                            class="label"
+                            style="display: inline-block; float: left"
+                        >{{ entry.name + ' - ' + entry.episode }}</span>
+                        <span
+                            class="label"
+                            style="display: inline-block; float: right"
+                        >{{ entry.received }} MB / {{entry.size}} MB</span>
+                    </div>
+
                     <progress
                         :class="{ progress: true, 'is-small': true, 'is-success': entry.finished }"
                         :value="entry.progress"
@@ -53,6 +60,7 @@ export default {
                 size: element.size,
                 pack: element.pack,
                 progress: 0,
+                received: 0,
                 finished: false,
             });
         });
@@ -82,14 +90,22 @@ export default {
             await downloader.connect();
             downloader.download();
 
-            downloader.instance.on('xdcc-progress', xdccInstance => {
-                const entry = this.episodesToDownload.find(
-                    element =>
-                        xdccInstance.xdccInfo.fileName.includes(element.name) &&
-                        xdccInstance.xdccInfo.fileName.includes(element.episode)
-                );
-                entry.progress = xdccInstance.xdccInfo.progress;
-            });
+            downloader.instance.on(
+                'xdcc-progress',
+                (xdccInstance, received) => {
+                    const entry = this.episodesToDownload.find(
+                        element =>
+                            xdccInstance.xdccInfo.fileName.includes(
+                                element.name
+                            ) &&
+                            xdccInstance.xdccInfo.fileName.includes(
+                                element.episode
+                            )
+                    );
+                    entry.progress = xdccInstance.xdccInfo.progress;
+                    entry.received = (received / 1024 / 1024).toFixed(0);
+                }
+            );
 
             downloader.instance.on('xdcc-complete', xdccInstance => {
                 const entry = this.episodesToDownload.find(
@@ -98,6 +114,7 @@ export default {
                         xdccInstance.xdccInfo.fileName.includes(element.episode)
                 );
                 entry.progress = 100;
+                entry.received = entry.size;
                 entry.finished = true;
 
                 if (this.allFinished) {
@@ -115,3 +132,11 @@ export default {
     },
 };
 </script>
+<style lang="scss" scoped>
+.field-label {
+    @extend .has-text-black;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    display: block;
+}
+</style>
