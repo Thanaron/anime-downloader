@@ -4,11 +4,11 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-import 'buefy/dist/buefy.css';
+import '@fortawesome/fontawesome-free/css/fontawesome.css';
+import '@fortawesome/fontawesome-free/css/solid.min.css';
 
 Vue.config.productionTip = false;
-
-Vue.use(Buefy);
+Vue.use(Buefy, { defaultIconPack: 'fas' });
 
 new Vue({
     store,

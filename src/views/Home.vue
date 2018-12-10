@@ -1,109 +1,179 @@
 <template>
-    <div style="margin-top: 20px;">
-        <div class="columns">
-            <div class="column is-offset-1 is-8">
-                <b-field>
-                    <b-input
-                        v-model="searchInput"
-                        expanded
-                        placeholder="Search.."
-                        @keyup.enter.native="search"
-                    />
-                    <b-select v-model="selectedResolution" placeholder="Quality">
-                        <option value="1080">1080p</option>
-                        <option value="720">720p</option>
-                        <option value="480">480p</option>
-                    </b-select>
-                </b-field>
+    <div>
+        <Titlebar/>
+        <div id="content">
+            <div style="margin-top: 10px" class="columns">
+                <div class="column is-narrow" v-if="checkedRows.length > 0">
+                    <a
+                        class="button is-primary is-inverted has-background-white"
+                        style="border: 0"
+                        @click="downloadSelected"
+                    >
+                        <BIcon pack="fas" icon="arrow-circle-down" size="is-medium"/>
+                    </a>
+                </div>
+                <div class="column">
+                    <BField>
+                        <BInput
+                            v-model="searchInput"
+                            expanded
+                            placeholder="Search.."
+                            @keyup.enter.native="search"
+                        />
+                        <BSelect v-model="selectedResolution">
+                            <option value="1080">1080p</option>
+                            <option value="720">720p</option>
+                            <option value="480">480p</option>
+                        </BSelect>
+                    </BField>
+                </div>
+                <div class="column is-narrow">
+                    <button
+                        :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
+                        :disabled="loading"
+                        @click="search"
+                    >Search</button>
+                </div>
             </div>
-            <div class="column is-2">
-                <button
-                    :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
-                    :disabled="loading"
-                    @click="search"
-                >Search</button>
-            </div>
-        </div>
-        <div class="result-table">
-            <b-table
+            <BTable
                 :checked-rows.sync="checkedRows"
-                :data="data.length > 0 ? data : []"
+                :data="data"
                 :loading="loading"
                 checkable
                 striped
-                :paginated="data.length > 0"
-                per-page="12"
+                :mobile-cards="false"
+                class="result-table"
             >
                 <template slot-scope="props">
-                    <b-table-column field="bot" label="Bot" sortable width="200">{{ props.row.bot }}</b-table-column>
-                    <b-table-column field="name" label="Name" sortable centered>{{ props.row.name }}</b-table-column>
-                    <b-table-column
+                    <BTableColumn
+                        field="bot"
+                        label="Bot"
+                        sortable
+                        width="200"
+                        :visible="visibleColumns.includes('bot')"
+                    >{{ props.row.bot }}</BTableColumn>
+                    <BTableColumn
+                        field="name"
+                        label="Name"
+                        :visible="visibleColumns.includes('name')"
+                    >{{ props.row.name }}</BTableColumn>
+                    <BTableColumn
                         field="episode"
                         label="Episode"
-                        sortable
                         numeric
                         width="30"
-                    >{{ props.row.episode }}</b-table-column>
-                    <b-table-column
+                        :visible="visibleColumns.includes('episode')"
+                    >{{ props.row.episode }}</BTableColumn>
+                    <BTableColumn
                         field="resolution"
                         label="Resolution"
                         numeric
                         width="100"
-                    >{{ props.row.resolution }}p</b-table-column>
+                        :visible="visibleColumns.includes('resolution')"
+                    >{{ props.row.resolution }}p</BTableColumn>
+                    <BTableColumn
+                        field="pack"
+                        label="Pack"
+                        numeric
+                        width="100"
+                        :visible="visibleColumns.includes('pack')"
+                    >#{{ props.row.pack }}</BTableColumn>
+                    <BTableColumn
+                        field="size"
+                        label="Size"
+                        numeric
+                        width="100"
+                        :visible="visibleColumns.includes('size')"
+                    >{{ props.row.size }} MB</BTableColumn>
                 </template>
-
-                <template slot="bottom-left">
-                    <button
-                        v-if="checkedRows.length > 0"
-                        class="button has-background-link has-text-white"
-                        @click="download"
-                    >Download {{ checkedRows.length }} episodes</button>
-                </template>
-            </b-table>
+            </BTable>
+            <div class="button-container">
+                <a
+                    class="button is-primary is-inverted has-background-white download-button"
+                    style="border: 0"
+                    @click="openSettings"
+                >
+                    <BIcon pack="fas" icon="cog" size="is-small"/>
+                </a>
+            </div>
         </div>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import Titlebar from '../components/Titlebar.vue';
 import DownloadProgressModal from '../components/DownloadProgressModal.vue';
+import SettingsModal from '../components/SettingsModal.vue';
 import Packlist from '../packlist';
 
-export default {
-    data() {
-        return {
-            loading: false,
-            data: [],
-            checkedRows: [],
-            selectedResolution: '1080',
-            searchInput: '',
-        };
-    },
-    methods: {
-        search() {
-            this.loading = true;
-            const searchData = {
-                name: this.searchInput,
-                resolution: this.selectedResolution,
-            };
-            Packlist.search(searchData).then(result => {
-                this.data = result;
-                this.loading = false;
-            });
-        },
-        download() {
-            this.$modal.open({
-                parent: this,
-                component: DownloadProgressModal,
-                hasModalCard: true,
-                props: { list: this.checkedRows },
-            });
-        },
-    },
-};
+@Component({
+    components: { Titlebar },
+})
+export default class Home extends Vue {
+    loading: boolean = false;
+    data: HSRelease[] = [];
+    checkedRows: HSRelease[] = [];
+    selectedResolution: string = '1080';
+    searchInput: string = '';
+
+    get visibleColumns() {
+        return this.$store.state.visibleColumns;
+    }
+
+    search() {
+        this.loading = true;
+        Packlist.search(
+            this.searchInput,
+            this.selectedResolution,
+            this.$store.state.uniqueEpisodesOnly
+        ).then((result: any) => {
+            this.data = result;
+            this.loading = false;
+        });
+    }
+
+    downloadSelected() {
+        this.$modal.open({
+            parent: this,
+            component: DownloadProgressModal,
+            hasModalCard: true,
+            props: { list: this.checkedRows },
+        });
+    }
+
+    openSettings() {
+        this.$modal.open({
+            parent: this,
+            component: SettingsModal,
+            hasModalCard: true,
+        });
+    }
+}
 </script>
 
-<style scoped>
+<style lang="scss">
 .result-table {
-    margin-left: 20px;
-    margin-right: 20px;
+    height: calc(95vh - 100px);
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.download-button {
+    position: fixed;
+    bottom: -1px;
+    left: -1px;
+}
+
+#content {
+    height: calc(100% - 32px);
+    padding: 30px;
+    overflow-y: auto;
 }
 </style>
