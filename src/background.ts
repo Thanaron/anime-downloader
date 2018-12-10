@@ -1,5 +1,9 @@
+'use strict';
+
 import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import * as path from 'path';
+import { format as formatUrl } from 'url';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 
 const log = require('electron-log');
@@ -8,18 +12,24 @@ const unhandled = require('electron-unhandled');
 unhandled({ logger: log.error });
 
 autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
+(autoUpdater.logger as any).transports.file.level = 'info';
+
 log.info('App starting...');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+if (isDevelopment) {
+    // Don't load any native (external) modules until the following line is run:
+    require('module').globalPaths.push(process.env.NODE_MODULES_PATH);
+}
 
-let win;
+// global reference to mainWindow (necessary to prevent window from being garbage collected)
+let mainWindow: any;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true });
-function createWindow() {
-    // Create the browser window.
-    win = new BrowserWindow({
+function createMainWindow() {
+    const window = new BrowserWindow({
+        backgroundColor: '#2E3440',
         width: 800,
         height: 770,
         minWidth: 800,
@@ -31,73 +41,62 @@ function createWindow() {
         },
     });
 
-    if (isDevelopment || process.env.IS_TEST) {
+    if (isDevelopment) {
         // Load the url of the dev server if in development mode
-        win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-        if (!process.env.IS_TEST) win.webContents.openDevTools();
+        window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+        if (!process.env.IS_TEST) window.webContents.openDevTools({ mode: 'bottom' });
     } else {
         createProtocol('app');
-        // Load the index.html when not in development
-        win.loadURL('app://./index.html');
+        //   Load the index.html when not in development
+        window.loadURL('app://./index.html');
     }
 
-    win.on('closed', () => {
-        win = null;
+    window.on('closed', () => {
+        mainWindow = null;
     });
+
+    window.webContents.on('devtools-opened', () => {
+        window.focus();
+        setImmediate(() => {
+            window.focus();
+        });
+    });
+
+    return window;
 }
 
-// Quit when all windows are closed.
+// quit application when all windows are closed
 app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
+    // on macOS it is common for applications to stay open until the user explicitly quits
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
 app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (win === null) {
-        createWindow();
+    // on macOS it is common to re-create a window even after all windows have been closed
+    if (mainWindow === null) {
+        mainWindow = createMainWindow();
     }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+// create main BrowserWindow when electron is ready
 app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         await installVueDevtools();
+        mainWindow = createMainWindow();
     } else {
         autoUpdater.autoDownload = false;
         autoUpdater.checkForUpdates();
     }
-
-    createWindow();
 });
-
-// Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
-    if (process.platform === 'win32') {
-        process.on('message', data => {
-            if (data === 'graceful-exit') {
-                app.quit();
-            }
-        });
-    } else {
-        process.on('SIGTERM', () => {
-            app.quit();
-        });
-    }
-}
 
 autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...');
 });
 
-let updateWindow;
+let updateWindow: any;
 
 autoUpdater.on('update-available', info => {
     log.info(`Update available: ${JSON.stringify(info)}`);
@@ -106,11 +105,13 @@ autoUpdater.on('update-available', info => {
         frame: false,
         transparent: true,
         maximizable: false,
-        parent: win,
+        parent: mainWindow,
         acceptFirstMouse: true,
     });
 
+    createProtocol('app');
     updateWindow.loadURL('app://./index.html#update');
+    updateWindow.show();
     updateWindow.webContents.on('did-finish-load', () => {
         updateWindow.webContents.send('updateInfo', {
             version: info.releaseName,
@@ -119,9 +120,17 @@ autoUpdater.on('update-available', info => {
     });
 });
 
+ipcMain.on('openMainWindow', () => {
+    mainWindow = createMainWindow();
+    updateWindow.close();
+    updateWindow = null;
+});
+
 autoUpdater.on('update-not-available', info => {
     log.info(`Update not available: ${JSON.stringify(info)}`);
     updateWindow = null;
+
+    mainWindow = createMainWindow();
 });
 
 autoUpdater.on('error', (ev, err) => {

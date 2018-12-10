@@ -1,5 +1,5 @@
 <template>
-    <b-modal active has-modal-card :onCancel="closeModal" :canCancel="['x', 'outside', 'escape']">
+    <BModal active has-modal-card :on-cancel="closeModal" :can-cancel="['x', 'outside', 'escape']">
         <div class="modal-card">
             <header class="modal-card-head">
                 <div class="modal-card-title">Settings</div>
@@ -11,24 +11,24 @@
                             class="has-text-weight-semibold is-size-5"
                             style="margin-bottom: 15px"
                         >Application</p>
-                        <b-field>
-                            <b-checkbox v-model="autoDownload">Automatically start downloading</b-checkbox>
-                        </b-field>
-                        <b-field label="Download path"></b-field>
-                        <b-field>
-                            <b-input expanded v-model="downloadPath"></b-input>
-                        </b-field>
+                        <BField>
+                            <BCheckbox v-model="autoDownload">Automatically start downloading</BCheckbox>
+                        </BField>
+                        <BField label="Download path"/>
+                        <BField>
+                            <BInput expanded v-model="downloadPath"/>
+                        </BField>
                         <hr>
                         <p
                             class="has-text-weight-semibold is-size-5"
                             style="margin-bottom: 15px"
                         >Updates</p>
-                        <b-field>
-                            <b-checkbox
+                        <BField>
+                            <BCheckbox
                                 disabled
                                 v-model="autoCheckUpdate"
-                            >Check for updates on startup</b-checkbox>
-                        </b-field>
+                            >Check for updates on startup</BCheckbox>
+                        </BField>
                     </div>
                     <div class="column">
                         <p
@@ -36,43 +36,43 @@
                             style="margin-bottom: 15px"
                         >Search</p>
                         <div style="margin-bottom: 10px">
-                            <b-field label="General">
-                                <b-tooltip
+                            <BField label="General">
+                                <BTooltip
                                     multilined
                                     label="Disable if you want to choose the bot to download from"
                                 >
-                                    <b-checkbox
+                                    <BCheckbox
                                         v-model="uniqueEpisodesOnly"
-                                    >Only show one result per episode</b-checkbox>
-                                </b-tooltip>
-                            </b-field>
+                                    >Only show one result per episode</BCheckbox>
+                                </BTooltip>
+                            </BField>
                         </div>
                         <div>
-                            <b-field label="Visible columns">
-                                <b-checkbox
+                            <BField label="Visible columns">
+                                <BCheckbox
                                     v-model="visibleColumns"
                                     :disabled="!uniqueEpisodesOnly"
                                     native-value="bot"
-                                >Bot</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox v-model="visibleColumns" native-value="name">Name</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox v-model="visibleColumns" native-value="episode">Episode</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox
+                                >Bot</BCheckbox>
+                            </BField>
+                            <BField>
+                                <BCheckbox v-model="visibleColumns" native-value="name">Name</BCheckbox>
+                            </BField>
+                            <BField>
+                                <BCheckbox v-model="visibleColumns" native-value="episode">Episode</BCheckbox>
+                            </BField>
+                            <BField>
+                                <BCheckbox
                                     v-model="visibleColumns"
                                     native-value="resolution"
-                                >Resolution</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox v-model="visibleColumns" native-value="pack">Pack</b-checkbox>
-                            </b-field>
-                            <b-field>
-                                <b-checkbox v-model="visibleColumns" native-value="size">Size</b-checkbox>
-                            </b-field>
+                                >Resolution</BCheckbox>
+                            </BField>
+                            <BField>
+                                <BCheckbox v-model="visibleColumns" native-value="pack">Pack</BCheckbox>
+                            </BField>
+                            <BField>
+                                <BCheckbox v-model="visibleColumns" native-value="size">Size</BCheckbox>
+                            </BField>
                         </div>
                     </div>
                 </div>
@@ -81,72 +81,69 @@
                 <button class="button" type="button" @click="closeModal">Close</button>
             </footer>
         </div>
-    </b-modal>
+    </BModal>
 </template>
 
-<script>
-export default {
-    name: 'SettingsModal',
-    computed: {
-        visibleColumns: {
-            get() {
-                return this.$store.state.visibleColumns;
-            },
-            set(value) {
-                if (value.length === 0) {
-                    return;
-                }
-                this.updateItem('visibleColumns', value);
-            },
-        },
-        autoDownload: {
-            get() {
-                return this.$store.state.autoDownload;
-            },
-            set(value) {
-                this.updateItem('autoDownload', value);
-            },
-        },
-        autoCheckUpdate: {
-            get() {
-                return this.$store.state.autoCheckUpdate;
-            },
-            set(value) {
-                this.updateItem('autoCheckItem', value);
-            },
-        },
-        uniqueEpisodesOnly: {
-            get() {
-                return this.$store.state.uniqueEpisodesOnly;
-            },
-            set(value) {
-                if (!value && !this.visibleColumns.includes('bot')) {
-                    this.visibleColumns.push('bot');
-                    this.updateItem('visibleColumns', this.visibleColumns);
-                } else if (value && this.visibleColumns.includes('bot')) {
-                    const index = this.visibleColumns.indexOf('bot');
-                    this.visibleColumns.splice(index, 1);
-                    this.updateItem('visibleColumns', this.visibleColumns);
-                }
-                this.updateItem('uniqueEpisodesOnly', value);
-            },
-        },
-        downloadPath: {
-            get() {
-                return this.$store.state.downloadPath;
-            },
-            set(value) {
-                this.updateItem('downloadPath', value);
-            },
-        },
-    },
-    methods: {
-        closeModal() {
-            this.$parent.close();
-        },
-        updateItem(key, value) {
-            this.$store.dispatch('set', { key, value });
-        },
-    },
-};
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+@Component
+export default class SettingsModal extends Vue {
+    get visibleColumns(): string[] {
+        return this.$store.state.visibleColumns;
+    }
+    set visibleColumns(value) {
+        if (value.length === 0) {
+            return;
+        }
+        this.updateItem('visibleColumns', value);
+    }
+
+    get autoDownload(): boolean {
+        return this.$store.state.autoDownload;
+    }
+
+    set autoDownload(value) {
+        this.updateItem('autoDownload', value);
+    }
+
+    get autoCheckUpdate(): boolean {
+        return this.$store.state.autoCheckUpdate;
+    }
+
+    set autoCheckUpdate(value) {
+        this.updateItem('autoCheckItem', value);
+    }
+
+    get uniqueEpisodesOnly(): boolean {
+        return this.$store.state.uniqueEpisodesOnly;
+    }
+    set uniqueEpisodesOnly(value) {
+        if (!value && !this.visibleColumns.includes('bot')) {
+            this.visibleColumns.push('bot');
+            this.updateItem('visibleColumns', this.visibleColumns);
+        } else if (value && this.visibleColumns.includes('bot')) {
+            const index = this.visibleColumns.indexOf('bot');
+            this.visibleColumns.splice(index, 1);
+            this.updateItem('visibleColumns', this.visibleColumns);
+        }
+        this.updateItem('uniqueEpisodesOnly', value);
+    }
+
+    get downloadPath(): string {
+        return this.$store.state.downloadPath;
+    }
+    set downloadPath(value) {
+        this.updateItem('downloadPath', value);
+    }
+
+    closeModal() {
+        (this.$parent as any).close();
+    }
+
+    updateItem(key: string, value: any) {
+        this.$store.dispatch('set', { key, value });
+    }
+}
 </script>
