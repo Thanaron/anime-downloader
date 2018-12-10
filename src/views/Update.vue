@@ -1,5 +1,5 @@
 <template>
-    <b-modal :canCancel="['escape']" active has-modal-card style="background-color: transparent">
+    <BModal :can-cancel="['escape']" active has-modal-card style="background-color: transparent">
         <div class="modal-card modal-window">
             <header class="modal-card-head click-on" style="-webkit-app-region: drag">
                 <div class="modal-card-title click-on">Update available - {{ version }}</div>
@@ -7,13 +7,19 @@
                     @click="cancelUpdate"
                     class="delete is-medium click-on"
                     style="-webkit-app-region: no-drag"
-                ></a>
+                />
             </header>
             <section class="modal-card-body click-on">
                 <div class="content" v-html="notes"/>
+                <progress
+                    :class="{ progress: true, 'is-small': true, 'is-success': downloaded }"
+                    :value="progress"
+                    v-if="progress > 0"
+                    max="100"
+                >{{ progress }}%</progress>
             </section>
             <footer class="modal-card-foot click-on">
-                <button @click="cancelUpdate" class="button" type="button">Cancel</button>
+                <button @click="skipUpdate" class="button" type="button">Skip update</button>
                 <button
                     @click="downloadUpdate"
                     class="button is-primary"
@@ -22,39 +28,38 @@
                 <button @click="installUpdate" class="button is-primary" v-else>Quit and Install</button>
             </footer>
         </div>
-    </b-modal>
+    </BModal>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { remote, ipcRenderer } from 'electron';
+
 const TransparencyMouseFix = require('electron-transparency-mouse-fix');
-const { remote, ipcRenderer } = require('electron');
 
-export default {
-    name: 'UpdateModal',
-    beforeCreate() {
-        document.body.className = 'click-through';
-        document.documentElement.style = 'background-color: transparent';
-    },
-    data() {
-        return {
-            version: '',
-            notes: '',
-            progress: 0,
-            downloaded: false,
-        };
-    },
+@Component
+export default class Update extends Vue {
+    version: string = '';
+    notes: string = '';
+    progress: number = 0;
+    downloaded: boolean = false;
+
     mounted() {
-        const bg = document.getElementsByClassName('modal-background')[0];
-        bg.parentElement.removeChild(bg);
+        const bg = document.getElementsByClassName('modal-background')[0]!;
+        bg.parentElement!.removeChild(bg);
 
-        ipcRenderer.on('updateInfo', (event, info) => {
+        ipcRenderer.on('updateInfo', (event: any, info: any) => {
             this.version = info.version;
             this.notes = info.notes;
         });
 
-        ipcRenderer.on('updateDownloadProgress', (event, progress) => {
-            this.progress = progress;
-        });
+        ipcRenderer.on(
+            'updateDownloadProgress',
+            (event: any, progress: any) => {
+                this.progress = progress;
+            }
+        );
 
         ipcRenderer.on('updateDownloaded', () => {
             this.progress = 100;
@@ -66,19 +71,33 @@ export default {
             log: true,
             fixPointerEvents: 'auto',
         });
-    },
-    methods: {
-        cancelUpdate() {
-            remote.getCurrentWindow().close();
-        },
-        downloadUpdate() {
-            ipcRenderer.send('downloadUpdate');
-        },
-        installUpdate() {
-            ipcRenderer.send('installUpdate');
-        },
-    },
-};
+    }
+
+    /* eslint-disable */
+
+    beforeCreate() {
+        document.body.className = 'click-through';
+        document.documentElement.style.backgroundColor = 'transparent';
+    }
+
+    cancelUpdate() {
+        remote.getCurrentWindow().close();
+    }
+
+    downloadUpdate() {
+        ipcRenderer.send('downloadUpdate');
+    }
+
+    installUpdate() {
+        ipcRenderer.send('installUpdate');
+    }
+
+    skipUpdate() {
+        ipcRenderer.send('openMainWindow');
+    }
+
+    /* eslint-enable */
+}
 </script>
 <style>
 .click-on {
