@@ -1,27 +1,22 @@
 <template>
-    <div>
-        <titlebar></titlebar>
-        <div id="content">
-            <router-view/>
-        </div>
-    </div>
+    <RouterView class="app"/>
 </template>
 
-<script>
-import Titlebar from './components/Titlebar.vue';
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
 import SetupModal from './components/SetupModal.vue';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
 
-export default {
-    components: {
-        Titlebar,
-    },
+@Component
+export default class App extends Vue {
     created() {
         unhandled({ logger: log.error });
         this.$store.dispatch('loadCurrentSettings');
-    },
+    }
+
     mounted() {
         if (
             !this.$store.state.username ||
@@ -33,14 +28,21 @@ export default {
                 parent: this,
             });
         }
-    },
-};
+    }
+}
 </script>
-
 <style lang="scss">
-#content {
-    height: calc(100% - 32px);
-    padding: 30px;
-    overflow-y: auto;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.app {
+    -webkit-user-select: none;
+    animation: fadeIn 0.5s;
 }
 </style>

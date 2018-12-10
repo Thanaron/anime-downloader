@@ -1,8 +1,17 @@
 const ircXdcc = require('irc-xdcc');
 const log = require('electron-log');
 
-export default class IrcDownloader {
-    constructor(episodesToDownload, downloadPath, username) {
+class IrcDownloader {
+    public instance: any;
+    private episodesToDownload: HSReleaseDownloadInfo[];
+    private downloadPath: string;
+    private username: string;
+
+    constructor(
+        episodesToDownload: HSReleaseDownloadInfo[],
+        downloadPath: string,
+        username: string
+    ) {
         this.episodesToDownload = episodesToDownload;
         this.downloadPath = downloadPath;
         this.username = username;
@@ -18,24 +27,26 @@ export default class IrcDownloader {
             acceptUnpooled: true,
             resume: true,
         })
-            .then(instance => {
+            .then((instance: any) => {
                 this.instance = instance;
             })
-            .catch(error => {
+            .catch((error: any) => {
                 log.error(error);
             });
     }
 
     download() {
-        this.episodesToDownload.forEach(pack => {
+        this.episodesToDownload.forEach((downloadInfo: HSReleaseDownloadInfo) => {
             this.instance
-                .xdcc({ botNick: pack.bot, packId: pack.pack })
-                .then(xdccInstance => {
+                .xdcc({ botNick: downloadInfo.release.bot, packId: downloadInfo.release.pack })
+                .then((xdccInstance: any) => {
                     xdccInstance.start();
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     log.error(error);
                 });
         });
     }
 }
+
+export default IrcDownloader;

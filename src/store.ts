@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        visibleColumns: [],
+        visibleColumns: [] as string[],
         autoDownload: false,
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,

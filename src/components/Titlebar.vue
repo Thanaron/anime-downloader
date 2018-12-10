@@ -5,33 +5,72 @@
                 <span>HS Downloader - {{ version }}</span>
             </div>
             <div id="window-controls">
-                <div class="win-button" id="min-button">
+                <div class="win-button" ref="minButton" id="min-button" @click="minimize">
                     <span>&#xE921;</span>
                 </div>
-                <div class="win-button" id="max-button">
+                <div class="win-button" ref="maxButton" id="max-button" @click="maximize">
                     <span>&#xE922;</span>
                 </div>
-                <div class="win-button" id="restore-button">
+                <div class="win-button" ref="restoreButton" id="restore-button" @click="restore">
                     <span>&#xE923;</span>
                 </div>
-                <div class="win-button" id="close-button">
+                <div class="win-button" ref="closeButton" id="close-button" @click="close">
                     <span>&#xE8BB;</span>
                 </div>
             </div>
         </div>
     </header>
 </template>
-<script>
-const { app } = require('electron').remote;
-require('../renderer');
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-export default {
-    data() {
-        return {
-            version: app.getVersion(),
-        };
-    },
-};
+const { app, getCurrentWindow } = require('electron').remote;
+
+@Component
+export default class Titlebar extends Vue {
+    private version: string = app.getVersion();
+    private window = getCurrentWindow();
+
+    $refs!: {
+        maxButton: HTMLElement;
+        restoreButton: HTMLElement;
+    };
+
+    mounted() {
+        this.toggleMaxRestoreButtons();
+        this.window.on('maximize', this.toggleMaxRestoreButtons);
+        this.window.on('unmaximize', this.toggleMaxRestoreButtons);
+    }
+
+    minimize() {
+        this.window.minimize();
+    }
+
+    maximize() {
+        this.window.maximize();
+        this.toggleMaxRestoreButtons();
+    }
+
+    restore() {
+        this.window.unmaximize();
+        this.toggleMaxRestoreButtons();
+    }
+
+    close() {
+        this.window.close();
+    }
+
+    toggleMaxRestoreButtons() {
+        if (this.window.isMaximized()) {
+            this.$refs.maxButton.style.display = 'none';
+            this.$refs.restoreButton.style.display = 'flex';
+        } else {
+            this.$refs.restoreButton.style.display = 'none';
+            this.$refs.maxButton.style.display = 'flex';
+        }
+    }
+}
 </script>
 <style lang="scss" scoped>
 #titlebar {

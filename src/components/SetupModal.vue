@@ -1,5 +1,5 @@
 <template>
-    <b-modal active has-modal-card>
+    <BModal active has-modal-card>
         <div class="modal-card">
             <header class="modal-card-head">
                 <div class="modal-card-title">Setup</div>
@@ -11,12 +11,12 @@
                 <br>
                 <div class="columns">
                     <div class="column">
-                        <b-field
+                        <BField
                             :type="{ 'is-danger': hasError }"
                             :message="{ 'Unable to generate random username. Please try again': hasError }"
                         >
-                            <b-input expanded v-model="username" placeholder="Username"></b-input>
-                        </b-field>
+                            <BInput expanded v-model="username" placeholder="Username"/>
+                        </BField>
                     </div>
                     <div class="column is-narrow">
                         <button
@@ -36,58 +36,57 @@
                 <button class="button is-primary" v-else @click="setUsername">Continue</button>
             </footer>
         </div>
-    </b-modal>
+    </BModal>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import axios from 'axios';
+import Component from 'vue-class-component';
 
-export default {
-    name: 'SetupModal',
-    data() {
-        return {
-            username: '',
-            loading: false,
-            hasError: false,
-        };
-    },
-    methods: {
-        closeModal() {
-            this.$parent.close();
-        },
-        generateRandom() {
-            this.loading = true;
-            return axios
-                .get('https://passwordrandom.com/query', {
-                    params: {
-                        command: 'password',
-                        count: 1,
-                        format: 'plain',
-                        scheme: 'cvcvvcv',
-                    },
-                })
-                .then(response => {
-                    this.username = response.data;
-                    this.loading = false;
-                    this.hasError = false;
-                })
-                .catch(() => {
-                    this.hasError = true;
-                    this.loading = false;
-                });
-        },
-        skip() {
-            this.generateRandom()
-                .then(this.setUsername)
-                .then(this.closeModal);
-            
-        },
-        setUsername() {
-            return this.$store.dispatch('set', {
-                key: 'username',
-                value: this.username,
+@Component
+export default class SetupModal extends Vue {
+    private username: string = '';
+    private loading: boolean = false;
+    private hasError: boolean = false;
+
+    closeModal() {
+        (this.$parent as any).close();
+    }
+
+    generateRandom() {
+        this.loading = true;
+        return axios
+            .get('https://passwordrandom.com/query', {
+                params: {
+                    command: 'password',
+                    count: 1,
+                    format: 'plain',
+                    scheme: 'cvcvvcv',
+                },
+            })
+            .then(response => {
+                this.username = response.data;
+                this.loading = false;
+                this.hasError = false;
+            })
+            .catch(() => {
+                this.hasError = true;
+                this.loading = false;
             });
-        },
-    },
-};
+    }
+
+    skip() {
+        this.generateRandom()
+            .then(this.setUsername)
+            .then(this.closeModal);
+    }
+
+    setUsername() {
+        return this.$store.dispatch('set', {
+            key: 'username',
+            value: this.username,
+        });
+    }
+}
 </script>
