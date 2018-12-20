@@ -2,9 +2,10 @@
 
 import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import * as path from 'path';
-import { format as formatUrl } from 'url';
-import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+import {
+    createProtocol,
+    installVueDevtools,
+} from 'vue-cli-plugin-electron-builder/lib';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
@@ -44,7 +45,8 @@ function createMainWindow() {
     if (isDevelopment) {
         // Load the url of the dev server if in development mode
         window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-        if (!process.env.IS_TEST) window.webContents.openDevTools({ mode: 'bottom' });
+        if (!process.env.IS_TEST)
+            window.webContents.openDevTools({ mode: 'bottom' });
     } else {
         createProtocol('app');
         //   Load the index.html when not in development

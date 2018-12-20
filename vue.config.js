@@ -19,6 +19,7 @@ module.exports = {
                     artifactName: '${productName}-setup-${version}.${ext}',
                 },
             },
+            mainProcessFile: 'src/background.ts',
         },
     },
     css: {
@@ -26,6 +27,11 @@ module.exports = {
             sass: {
                 data: `@import "@/assets/theme.scss";`,
             },
+        },
+    },
+    pages: {
+        index: {
+            entry: 'src/main.ts',
         },
     },
 };
