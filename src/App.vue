@@ -19,8 +19,8 @@ export default class App extends Vue {
 
     mounted() {
         if (
-            !this.$store.state.username ||
-            this.$store.state.username.length === 0
+            !this.$store.state.config.username ||
+            this.$store.state.config.username.length === 0
         ) {
             this.generateRandom();
         }

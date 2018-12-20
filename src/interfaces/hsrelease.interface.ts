@@ -12,5 +12,4 @@ interface HSReleaseDownloadInfo {
     release: HSRelease;
     received: number | string;
     progress: number;
-    finished: boolean;
 }
