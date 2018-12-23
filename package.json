@@ -61,5 +61,5 @@
         "vue-cli-plugin-electron-builder": "^1.0.0-rc.8",
         "vue-template-compiler": "^2.5.17"
     },
-    "main": "background.ts"
+    "main": "background.js"
 }
