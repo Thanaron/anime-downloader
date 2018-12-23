@@ -74,6 +74,22 @@
                     </div>
                 </div>
             </div>
+            <div class="columns is-8" v-if="showAdvanced">
+                <div class="column">
+                    <p
+                        class="has-text-weight-semibold is-size-5"
+                        style="margin-bottom: 15px"
+                    >Advanced</p>
+                    <BField>
+                        <BTooltip :label="username">
+                            <Button
+                                class="button is-primary"
+                                @click="generateUsername"
+                            >Generate username</Button>
+                        </BTooltip>
+                    </BField>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -81,10 +97,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { AnyTxtRecord } from 'dns';
+import generateRandomUsername from '../utils/utils';
 
 @Component
 export default class Settings extends Vue {
+    showAdvanced: boolean = false;
+
+    get username(): string {
+        return this.$store.state.config.username;
+    }
+
     get visibleColumns(): string[] {
         return this.$store.state.config.visibleColumns;
     }
@@ -135,6 +157,12 @@ export default class Settings extends Vue {
 
     mounted() {
         window.addEventListener('keyup', this.handleEscKey);
+        window.addEventListener('keyup', this.toggleAdvanced);
+    }
+
+    /* eslint-disable-next-line */
+    generateUsername() {
+        generateRandomUsername();
     }
 
     updateItem(key: string, value: any) {
@@ -144,6 +172,12 @@ export default class Settings extends Vue {
     handleEscKey(event: KeyboardEvent) {
         if (event.key === 'Escape') {
             this.closeWindow();
+        }
+    }
+
+    toggleAdvanced(event: KeyboardEvent) {
+        if (event.keyCode === 85 && event.ctrlKey) {
+            this.showAdvanced = !this.showAdvanced;
         }
     }
 
