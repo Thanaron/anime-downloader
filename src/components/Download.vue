@@ -38,14 +38,20 @@
                     <span
                         class="label"
                         style="display: inline-block; float: right"
-                    >{{ entry.received }} MB / {{ entry.release.size }} MB</span>
+                    >{{ entry.received || 0 }} MB / {{ entry.release.size }} MB</span>
                 </div>
 
                 <progress
-                    :class="{ progress: true, 'is-success': entry.finished }"
+                    :class="{ 'is-success': entry.finished, 'is-danger': entry.error }"
+                    class="progress"
                     :value="entry.progress"
                     max="100"
                 >{{ entry.progress }}%</progress>
+                <div
+                    style="margin-top: 5px"
+                    class="is-size-6 has-text-danger"
+                    v-if="entry.error"
+                >{{ entry.error }}</div>
             </BField>
         </div>
     </div>
@@ -54,20 +60,44 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import log from 'electron-log';
 import IrcDownloader from '../irc-downloader';
+import generateRandomUsername from '../utils/utils';
+import { HSRelease, HSReleaseDownloadInfo } from '../types/types';
+
+const log = require('electron-log');
 
 @Component
 export default class Download extends Vue {
-    episodesToDownload: HSReleaseDownloadInfo[] = [];
     downloadStarted = false;
+    downloader!: IrcDownloader;
+    episodesToDownload: HSReleaseDownloadInfo[] = [];
 
     get selectedEpisodes(): HSRelease[] {
         return this.$store.state.app.selectedEpisodes;
     }
 
     created() {
-        this.updateList();
+        if (
+            !this.$store.state.config.username ||
+            this.$store.state.config.username.length === 0
+        ) {
+            generateRandomUsername();
+        }
+
+        this.downloader = new IrcDownloader(
+            this.$store.state.config.downloadPath,
+            this.$store.state.config.username
+        );
+
+        this.selectedEpisodes.forEach((element: HSRelease) => {
+            this.episodesToDownload.push({
+                release: element,
+                progress: 0,
+                received: 0,
+                finished: false,
+                error: '',
+            });
+        });
     }
 
     mounted() {
@@ -78,59 +108,18 @@ export default class Download extends Vue {
         window.addEventListener('keyup', this.handleEscKey);
     }
 
-    updateList() {
-        this.episodesToDownload = [];
-        this.selectedEpisodes.forEach((element: HSRelease) => {
-            this.episodesToDownload.push({
-                release: element,
-                progress: 0,
-                received: 0,
-            });
-        });
-    }
-
     async performDownload() {
         this.downloadStarted = true;
 
-        const downloadInstance = await IrcDownloader.connect(
-            this.$store.state.config.downloadPath,
-            this.$store.state.config.username
-        );
-        IrcDownloader.download(downloadInstance, this.episodesToDownload);
+        await this.downloader.connect();
+        this.downloader.registerGenericEvents(this.episodesToDownload);
+        this.downloader.downloadAll(this.episodesToDownload);
+    }
 
-        downloadInstance.on(
-            'xdcc-progress',
-            (xdccInstance: any, received: number) => {
-                const entry = this.episodesToDownload.find(
-                    element =>
-                        xdccInstance.xdccInfo.fileName.includes(
-                            element.release.name
-                        ) &&
-                        xdccInstance.xdccInfo.fileName.includes(
-                            element.release.episode
-                        )
-                );
-                if (entry) {
-                    entry.progress = xdccInstance.xdccInfo.progress;
-                    entry.received = (received / 1024 / 1024).toFixed(0);
-                }
-            }
-        );
-
-        downloadInstance.on('xdcc-complete', (xdccInstance: any) => {
-            const entry = this.episodesToDownload.find(
-                element =>
-                    xdccInstance.xdccInfo.fileName.includes(
-                        element.release.name
-                    ) &&
-                    xdccInstance.xdccInfo.fileName.includes(
-                        element.release.episode
-                    )
-            );
-            if (entry) {
-                entry.progress = 100;
-                entry.received = entry.release.size;
-            }
+    setUsername(username: string) {
+        this.$store.dispatch('set', {
+            key: 'username',
+            value: username,
         });
     }
 
@@ -142,6 +131,10 @@ export default class Download extends Vue {
 
     closeWindow() {
         window.removeEventListener('keyup', this.handleEscKey);
+        if (this.downloader && this.downloader.isConnected) {
+            this.downloader.disconnect();
+        }
+
         this.$router.go(-1);
     }
 
@@ -175,5 +168,9 @@ export default class Download extends Vue {
     padding: 20px;
     overflow-y: scroll;
     height: calc(89vh - 100px);
+}
+
+.progress {
+    margin-bottom: 0 !important;
 }
 </style>
