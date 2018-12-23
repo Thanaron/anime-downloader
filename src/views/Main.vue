@@ -3,9 +3,9 @@
         <Titlebar/>
         <div id="content">
             <transition
-                enter-active-class="poggersIn"
+                enter-active-class="viewTransitionIn"
                 mode="out-in"
-                leave-active-class="poggersOut"
+                leave-active-class="viewTransitionOut"
             >
                 <keep-alive include="Home">
                     <RouterView/>
@@ -38,17 +38,17 @@ export default class Main extends Vue {}
     overflow-x: hidden;
 }
 
-.poggersIn {
-    animation: czoomIn, fadeIn;
+.viewTransitionIn {
+    animation: zoomIn, fadeIn;
     animation-duration: 350ms;
 }
 
-.poggersOut {
-    animation: czoomOut, fadeOut;
+.viewTransitionOut {
+    animation: zoomOut, fadeOut;
     animation-duration: 350ms;
 }
 
-@keyframes czoomIn {
+@keyframes zoomIn {
     from {
         opacity: 0;
         transform: scale3d(0.98, 0.98, 0.98);
@@ -59,7 +59,7 @@ export default class Main extends Vue {}
     }
 }
 
-@keyframes czoomOut {
+@keyframes zoomOut {
     from {
         opacity: 1;
     }

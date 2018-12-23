@@ -17,7 +17,7 @@
                 </BTooltip>
             </div>
             <div class="column is-1 is-narrow">
-                <div class="close-button is-pulled-right delay-1_2s animated fadeIn fast">
+                <div class="close-button is-pulled-right">
                     <a class="delete is-large" @click="closeWindow"></a>
                     <span class="has-text-grey-lighter has-text-weight-semibold">ESC</span>
                 </div>

@@ -29,6 +29,6 @@ export default class App extends Vue {
 
 .app {
     -webkit-user-select: none;
-    animation: fadeIn 0.5s;
+    animation: fadeIn 500ms;
 }
 </style>

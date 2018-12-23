@@ -5,7 +5,7 @@
                 <div class="has-text-weight-bold is-size-3">Settings</div>
             </div>
             <div class="column is-1 is-narrow">
-                <div class="close-button delay-1_2s animated fadeIn fast">
+                <div class="close-button is-pulled-right">
                     <a class="delete is-large" @click="closeWindow"></a>
                     <span class="has-text-grey-lighter has-text-weight-semibold">ESC</span>
                 </div>
@@ -205,9 +205,5 @@ export default class Settings extends Vue {
     padding: 20px;
     overflow-y: scroll;
     height: calc(91vh - 100px);
-}
-
-.animated.delay-1_2s {
-    animation-delay: 0.5s;
 }
 </style>
