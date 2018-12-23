@@ -110,7 +110,8 @@ export default class Settings extends Vue {
     get visibleColumns(): string[] {
         return this.$store.state.config.visibleColumns;
     }
-    set visibleColumns(value) {
+
+    set visibleColumns(value: string[]) {
         if (value.length === 0) {
             return;
         }
@@ -121,7 +122,7 @@ export default class Settings extends Vue {
         return this.$store.state.config.autoDownload;
     }
 
-    set autoDownload(value) {
+    set autoDownload(value: boolean) {
         this.updateItem('autoDownload', value);
     }
 
@@ -129,14 +130,14 @@ export default class Settings extends Vue {
         return this.$store.state.config.autoCheckUpdate;
     }
 
-    set autoCheckUpdate(value) {
+    set autoCheckUpdate(value: boolean) {
         this.updateItem('autoCheckItem', value);
     }
 
     get uniqueEpisodesOnly(): boolean {
         return this.$store.state.config.uniqueEpisodesOnly;
     }
-    set uniqueEpisodesOnly(value) {
+    set uniqueEpisodesOnly(value: boolean) {
         if (!value && !this.visibleColumns.includes('bot')) {
             this.visibleColumns.push('bot');
             this.updateItem('visibleColumns', this.visibleColumns);
@@ -151,7 +152,8 @@ export default class Settings extends Vue {
     get downloadPath(): string {
         return this.$store.state.config.downloadPath;
     }
-    set downloadPath(value) {
+
+    set downloadPath(value: string) {
         this.updateItem('downloadPath', value);
     }
 
