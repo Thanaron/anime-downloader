@@ -1,38 +1,48 @@
-import { MutationTree, ActionTree, Module, GetterTree } from 'vuex';
+import { MutationTree, ActionTree, Module } from 'vuex';
+import {
+    ApplicationState,
+    HSRelease,
+    Status,
+    RootState,
+    StatusType,
+} from '@/types/types';
 
 const state: ApplicationState = {
-    status: 'Ready',
+    status: { message: 'Ready', type: StatusType.Info },
     searchText: '',
     tableData: [] as HSRelease[],
     selectedEpisodes: [] as HSRelease[],
 };
 
 const mutations: MutationTree<ApplicationState> = {
-    setData(state: any, data: HSRelease[]) {
+    setTableData(state: any, data: HSRelease[]) {
         state.tableData = data;
     },
-    setSearchText(state: any, searchText: string) {
+    setSearchText(state: ApplicationState, searchText: string) {
         state.searchText = searchText;
     },
-    setSelectedEpisodes(state: any, episodes: HSRelease[]) {
+    setSelectedEpisodes(state: ApplicationState, episodes: HSRelease[]) {
         state.selectedEpisodes = episodes;
     },
-    addSelectedEpisode(state: any, episode: HSRelease) {
+    addSelectedEpisode(state: ApplicationState, episode: HSRelease) {
         if (!state.selectedEpisodes.includes(episode)) {
             state.selectedEpisodes.push(episode);
         }
     },
-    removeSelectedEpisode(state: any, episode: HSRelease) {
+    removeSelectedEpisode(state: ApplicationState, episode: HSRelease) {
         if (state.selectedEpisodes.includes(episode)) {
             const index = state.selectedEpisodes.indexOf(episode);
             state.selectedEpisodes.splice(index, 1);
         }
     },
+    setStatus(state: ApplicationState, status: Status) {
+        state.status = status;
+    },
 };
 
 const actions: ActionTree<ApplicationState, RootState> = {
-    setData({ commit }, data: HSRelease[]) {
-        commit('setData', data);
+    setTableData({ commit }, data: HSRelease[]) {
+        commit('setTableData', data);
     },
     setSelectedEpisodes({ commit }, episodes: HSRelease[]) {
         commit('setSelectedEpisodes', episodes);

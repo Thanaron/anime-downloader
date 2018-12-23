@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { Module, MutationTree, ActionTree } from 'vuex';
 import store from '../../config';
+import { ConfigState, RootState } from '@/types/types';
 
 const state: ConfigState = {
     visibleColumns: [],
@@ -12,7 +13,7 @@ const state: ConfigState = {
 };
 
 const mutations: MutationTree<ConfigState> = {
-    set(state: any, data: any) {
+    set(state: ConfigState, data: any) {
         Vue.set(state, data.key, data.value);
     },
 };
