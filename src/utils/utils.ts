@@ -25,6 +25,7 @@ async function generateRandomUsername() {
         return response.data;
     } catch (err) {
         log.error(err);
+        status.setStatus(`Unable to generate a new username`, StatusType.Error);
     }
 }
 
