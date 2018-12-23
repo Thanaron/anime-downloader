@@ -35,8 +35,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import log from 'electron-log';
 import Packlist from '../packlist';
+
+const log = require('electron-log');
 
 @Component
 export default class Search extends Vue {
@@ -53,6 +54,7 @@ export default class Search extends Vue {
         this.$store.commit('setSearchText', this.input);
         this.loading = true;
 
+
         Packlist.search(
             this.searchText,
             parseInt(this.selectedResolution, 10),
@@ -61,10 +63,16 @@ export default class Search extends Vue {
         )
             .then(result => {
                 this.loading = false;
-                this.$store.dispatch('setData', result);
+                if (!result) {
+                    return;
+                }
+
+                this.$store.dispatch('setTableData', result);
+
             })
             .catch(err => {
                 log.error(err);
+
             });
     }
 }
