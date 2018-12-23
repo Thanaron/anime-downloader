@@ -62,5 +62,9 @@ select {
     border-color: transparent;
 }
 
+a {
+    outline: none;
+}
+
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
