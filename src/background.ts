@@ -1,6 +1,12 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import {
+    app,
+    protocol,
+    BrowserWindow,
+    ipcMain,
+    globalShortcut,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import {
     createProtocol,
@@ -10,7 +16,7 @@ import {
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
 
-unhandled({ logger: log.error });
+unhandled({ logger: log.error, showDialog: true });
 
 autoUpdater.logger = log;
 (autoUpdater.logger as any).transports.file.level = 'info';
@@ -92,6 +98,10 @@ app.on('ready', async () => {
         autoUpdater.autoDownload = false;
         autoUpdater.checkForUpdates();
     }
+
+    globalShortcut.register('CommandOrControl+Shift+D', () => {
+        mainWindow.webContents.openDevTools({ mode: 'bottom' });
+    });
 });
 
 autoUpdater.on('checking-for-update', () => {
