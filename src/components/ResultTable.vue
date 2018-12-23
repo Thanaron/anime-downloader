@@ -13,7 +13,6 @@
             <BTableColumn
                 field="bot"
                 label="Bot"
-                sortable
                 width="200"
                 :visible="visibleColumns.includes('bot')"
             >{{ props.row.bot }}</BTableColumn>
