@@ -25,15 +25,13 @@ export default class Footer extends Vue {
 </script>
 <style lang="scss">
 .bottombar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 32px !important;
-    line-height: 1.5;
+    position: fixed;
+    bottom: 0;
+    height: 32px;
+    width: 100%;
 }
 
 .download-button {
-    position: fixed;
     left: -5px;
     bottom: -5px;
 }

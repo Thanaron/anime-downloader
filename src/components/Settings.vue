@@ -1,5 +1,5 @@
 <template>
-    <div class="comp-wrapper">
+    <div>
         <div class="columns">
             <div class="column">
                 <div class="has-text-weight-bold is-size-3">Settings</div>
@@ -187,7 +187,7 @@ export default class Settings extends Vue {
     }
 }
 </script>
-<style>
+<style scoped>
 .close-button {
     width: 32px;
     text-align: center;
@@ -197,13 +197,10 @@ export default class Settings extends Vue {
     font-size: 11px;
 }
 
-.comp-wrapper {
-    padding: 20px;
-}
-
 .comp-content {
-    padding: 20px;
-    overflow-y: scroll;
-    height: calc(91vh - 100px);
+    height: calc(100vh - 170px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 </style>

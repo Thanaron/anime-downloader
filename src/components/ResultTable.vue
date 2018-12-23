@@ -77,7 +77,7 @@ export default class ResultTable extends Vue {
         this.$store.dispatch('setSelectedEpisodes', value);
     }
 
-    onCheck(episodes: HSRelease[] | null, selected: HSRelease) {
+    onCheck(episodes: HSRelease[] | undefined, selected: HSRelease) {
         if (this.selectedEpisodes.includes(selected)) {
             this.$store.commit('removeSelectedEpisode', selected);
         } else {
@@ -86,14 +86,14 @@ export default class ResultTable extends Vue {
     }
 
     onSelect(episode: HSRelease) {
-        this.onCheck(null, episode);
+        this.onCheck(undefined, episode);
     }
 }
 </script>
 
 <style lang="scss">
 .result-table {
-    height: calc(94vh - 100px);
+    height: calc(100vh - 170px);
     box-sizing: border-box;
     overflow-y: auto;
 }

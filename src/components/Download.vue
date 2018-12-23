@@ -1,5 +1,5 @@
 <template>
-    <div class="comp-wrapper">
+    <div>
         <div class="columns is-vcentered">
             <div class="column is-narrow">
                 <div class="has-text-weight-bold is-size-3">Download episodes</div>
@@ -24,20 +24,15 @@
             </div>
         </div>
         <div class="comp-content">
-            <BField
-                v-for="entry in episodesToDownload"
-                :key="entry.pack"
-                :addons="false"
-                style="margin-bottom: 20px;"
-            >
-                <div style="width: 100%">
+            <div v-for="entry in episodesToDownload" :key="entry.pack" style="margin-bottom: 20px;">
+                <div style="width: 100%;">
                     <span
                         class="label"
                         style="display: inline-block; float: left"
                     >{{ entry.release.name + ' - ' + entry.release.episode }}</span>
                     <span
                         class="label"
-                        style="display: inline-block; float: right"
+                        style="display: inline-block; float: right;"
                     >{{ entry.received || 0 }} MB / {{ entry.release.size }} MB</span>
                 </div>
 
@@ -46,13 +41,14 @@
                     class="progress"
                     :value="entry.progress"
                     max="100"
+                    style="margin-right: 20px;"
                 >{{ entry.progress }}%</progress>
                 <div
                     style="margin-top: 5px"
                     class="is-size-6 has-text-danger"
                     v-if="entry.error"
                 >{{ entry.error }}</div>
-            </BField>
+            </div>
         </div>
     </div>
 </template>
@@ -157,17 +153,20 @@ export default class Download extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.field-label {
-    @extend .has-text-black;
-    margin-bottom: 0.5em;
-    font-weight: 600;
-    display: block;
+.close-button {
+    width: 32px;
+    text-align: center;
+}
+
+.close-button > span {
+    font-size: 11px;
 }
 
 .comp-content {
-    padding: 20px;
-    overflow-y: scroll;
-    height: calc(89vh - 100px);
+    height: calc(100vh - 170px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 10px;
 }
 
 .progress {
