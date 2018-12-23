@@ -2,21 +2,19 @@
     <footer class="bottombar">
         <div class="download-button">
             <RouterLink to="/settings">
-                <button
-                    class="button is-primary is-inverted has-background-white"
-                    style="border: 0"
-                >
+                <a class="button is-primary is-inverted has-background-white" style="border: 0">
                     <BIcon pack="fas" icon="cog" size="is-small"/>
-                </button>
+                </a>
             </RouterLink>
         </div>
-        <span class="has-text-info status-text">{{ statusText }}</span>
+        <span class="status-text" :class="statusText.type">{{ statusText.message }}</span>
     </footer>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import status from '../status';
 
 @Component
 export default class Footer extends Vue {
@@ -30,7 +28,7 @@ export default class Footer extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 32px;
+    height: 32px !important;
     line-height: 1.5;
 }
 

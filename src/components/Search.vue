@@ -24,7 +24,8 @@
         </div>
         <div class="column is-narrow">
             <button
-                :class="{ button: true, 'is-primary': true, 'is-fullwidth': true, 'is-loading': loading }"
+                :class="{ 'is-loading': loading }"
+                class="button is-primary is-fullwidth"
                 :disabled="loading"
                 @click="search"
             >Search</button>
@@ -54,7 +55,6 @@ export default class Search extends Vue {
         this.$store.commit('setSearchText', this.input);
         this.loading = true;
 
-
         Packlist.search(
             this.searchText,
             parseInt(this.selectedResolution, 10),
@@ -68,11 +68,9 @@ export default class Search extends Vue {
                 }
 
                 this.$store.dispatch('setTableData', result);
-
             })
             .catch(err => {
                 log.error(err);
-
             });
     }
 }
