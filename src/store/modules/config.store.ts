@@ -4,7 +4,14 @@ import store from '../../config';
 import { ConfigState, RootState } from '@/types/types';
 
 const state: ConfigState = {
-    visibleColumns: [],
+    visibleColumns: {
+        bot: false,
+        name: true,
+        episode: true,
+        resolution: true,
+        pack: false,
+        size: true,
+    },
     autoDownload: false,
     autoCheckUpdate: true,
     uniqueEpisodesOnly: true,
