@@ -99,76 +99,48 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import generateRandomUsername from '../utils/utils';
 
-@Component
+const { mapFields } = require('vuex-map-fields');
+
+@Component({
+    computed: {
+        ...mapFields('config', [
+            'username',
+            'autoDownload',
+            'uniqueEpisodesOnly',
+            'downloadPath',
+            'autoCheckUpdate',
+            'visibleColumns.bot',
+            'visibleColumns.name',
+            'visibleColumns.episode',
+            'visibleColumns.resolution',
+            'visibleColumns.pack',
+            'visibleColumns.size',
+            'availableThemes',
+            'selectedTheme',
+        ]),
+    },
+})
 export default class Settings extends Vue {
     showAdvanced: boolean = false;
 
-    get username(): string {
-        return this.$store.state.config.username;
-    }
-
-    get visibleColumns(): string[] {
-        return this.$store.state.config.visibleColumns;
-    }
-
-    set visibleColumns(value: string[]) {
-        if (value.length === 0) {
-            return;
-        }
-        this.updateItem('visibleColumns', value);
-    }
-
-    get autoDownload(): boolean {
-        return this.$store.state.config.autoDownload;
-    }
-
-    set autoDownload(value: boolean) {
-        this.updateItem('autoDownload', value);
-    }
-
-    get autoCheckUpdate(): boolean {
-        return this.$store.state.config.autoCheckUpdate;
-    }
-
-    set autoCheckUpdate(value: boolean) {
-        this.updateItem('autoCheckItem', value);
-    }
-
-    get uniqueEpisodesOnly(): boolean {
-        return this.$store.state.config.uniqueEpisodesOnly;
-    }
-    set uniqueEpisodesOnly(value: boolean) {
-        if (!value && !this.visibleColumns.includes('bot')) {
-            this.visibleColumns.push('bot');
-            this.updateItem('visibleColumns', this.visibleColumns);
-        } else if (value && this.visibleColumns.includes('bot')) {
-            const index = this.visibleColumns.indexOf('bot');
-            this.visibleColumns.splice(index, 1);
-            this.updateItem('visibleColumns', this.visibleColumns);
-        }
-        this.updateItem('uniqueEpisodesOnly', value);
-    }
-
-    get downloadPath(): string {
-        return this.$store.state.config.downloadPath;
-    }
-
-    set downloadPath(value: string) {
-        this.updateItem('downloadPath', value);
+    @Watch('selectedTheme')
+    /* eslint-disable-next-line */
     }
 
     mounted() {
         window.addEventListener('keyup', this.handleEscKey);
         window.addEventListener('keyup', this.toggleAdvanced);
+
+        this.loadThemes();
+    }
+
+    loadThemes() {
+        this.availableThemes = ApplicationTheme.getAvailableThemes();
     }
 
     /* eslint-disable-next-line */
     generateUsername() {
         generateRandomUsername();
-    }
-
-    updateItem(key: string, value: any) {
-        this.$store.dispatch('set', { key, value });
     }
 
     handleEscKey(event: KeyboardEvent) {

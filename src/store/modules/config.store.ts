@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import { Module, MutationTree, ActionTree } from 'vuex';
+import { Module, MutationTree, ActionTree, GetterTree } from 'vuex';
 import store from '../../config';
 import { ConfigState, RootState } from '@/types/types';
 
+const { getField, updateField } = require('vuex-map-fields');
 const state: ConfigState = {
     visibleColumns: {
         bot: false,
@@ -17,12 +17,16 @@ const state: ConfigState = {
     uniqueEpisodesOnly: true,
     downloadPath: '',
     username: '',
+    availableThemes: [],
+    selectedTheme: { name: 'light', file: 'light.css' },
+};
+
+const getters: GetterTree<ConfigState, RootState> = {
+    getField,
 };
 
 const mutations: MutationTree<ConfigState> = {
-    set(state: ConfigState, data: any) {
-        Vue.set(state, data.key, data.value);
-    },
+    updateField,
 };
 
 const actions: ActionTree<ConfigState, RootState> = {
@@ -41,6 +45,7 @@ const actions: ActionTree<ConfigState, RootState> = {
 
 export const config: Module<ConfigState, RootState> = {
     state,
+    getters,
     mutations,
     actions,
 };
