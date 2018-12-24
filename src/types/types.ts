@@ -1,4 +1,5 @@
 export interface RootState {}
+
 export interface ConfigState {
     visibleColumns: string[];
     autoDownload: boolean;
@@ -8,21 +9,7 @@ export interface ConfigState {
     username: string;
 }
 
-export enum StatusType {
-    None = 'has-text-info',
-    Error = 'has-text-danger',
-    Warning = 'has-text-warning',
-    Info = 'has-text-info',
-    Success = 'has-text-success',
-}
-
-export interface Status {
-    message: string;
-    type: StatusType;
-}
-
 export interface ApplicationState {
-    status: Status;
     searchText: string;
     tableData: HSRelease[];
     selectedEpisodes: HSRelease[];
