@@ -31,4 +31,12 @@ export default class App extends Vue {
     -webkit-user-select: none;
     animation: fadeIn 500ms;
 }
+
+select {
+    border-color: transparent;
+}
+
+a {
+    outline: none;
+}
 </style>
