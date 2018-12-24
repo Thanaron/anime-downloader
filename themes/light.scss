@@ -1,0 +1,76 @@
+@import '../node_modules/bulma/sass/utilities/initial-variables';
+@import '../node_modules/nord/src/sass/nord.scss';
+
+$black: $nord0;
+$black-bis: $nord1;
+$black-ter: $nord2;
+
+$grey-darker: $nord0;
+$grey-dark: $nord1;
+$grey: $nord2;
+$grey-light: $nord3;
+$grey-lighter: $nord3;
+
+$white-ter: $nord6;
+$white-bis: $nord4;
+$white: $nord6;
+
+$orange: $nord12;
+$yellow: $nord13;
+$green: $nord14;
+$turquoise: $nord10;
+$cyan: $nord8;
+$blue: $nord10;
+$purple: $nord15;
+$red: $nord11;
+
+$body-background-color: $white-ter;
+
+$input-background-color: $white-bis;
+
+$modal-background-background-color: rgba($white-bis, 0.85);
+
+$input-shadow: none;
+
+$table-row-hover-background-color: $blue;
+$table-striped-row-even-hover-background-color: $blue;
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400');
+$body-family: 'Open Sans', sans-serif;
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: $nord6;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: $nord2;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: $nord1;
+}
+
+hr {
+    background-color: rgba($cyan, 0.5) !important;
+    height: 1px !important;
+}
+
+#window-controls .win-button:hover {
+    background: rgba($grey-darker, 0.2);
+    opacity: 1;
+}
+
+#window-controls #close-button:hover {
+    @extend .has-background-danger;
+}
+
+@import '../node_modules/bulma/bulma';
+@import '../node_modules/buefy/src/scss/buefy';

@@ -1,7 +1,14 @@
 export interface RootState {}
 
 export interface ConfigState {
-    visibleColumns: string[];
+    visibleColumns: {
+        bot: boolean;
+        name: boolean;
+        episode: boolean;
+        resolution: boolean;
+        pack: boolean;
+        size: boolean;
+    };
     autoDownload: boolean;
     autoCheckUpdate: boolean;
     uniqueEpisodesOnly: boolean;
