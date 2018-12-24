@@ -21,9 +21,17 @@
                     <BField>
                         <BCheckbox v-model="autoDownload">Automatically start downloading</BCheckbox>
                     </BField>
-                    <BField label="Download path"/>
-                    <BField>
+                    <BField label="Download path">
                         <BInput expanded v-model="downloadPath"/>
+                    </BField>
+                    <BField label="Theme">
+                        <BSelect expanded v-model="selectedTheme">
+                            <option
+                                v-for="theme in availableThemes"
+                                :key="theme.name"
+                                :value="theme"
+                            >{{ theme.name }}</option>
+                        </BSelect>
                     </BField>
                     <hr>
                     <p
@@ -51,25 +59,25 @@
                     <div>
                         <BField label="Visible columns">
                             <BCheckbox
-                                v-model="visibleColumns"
+                                v-model="bot"
                                 :disabled="!uniqueEpisodesOnly"
                                 native-value="bot"
                             >Bot</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="name">Name</BCheckbox>
+                            <BCheckbox v-model="name" native-value="name">Name</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="episode">Episode</BCheckbox>
+                            <BCheckbox v-model="episode" native-value="episode">Episode</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="resolution">Resolution</BCheckbox>
+                            <BCheckbox v-model="resolution" native-value="resolution">Resolution</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="pack">Pack</BCheckbox>
+                            <BCheckbox v-model="pack" native-value="pack">Pack</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="size">Size</BCheckbox>
+                            <BCheckbox v-model="size" native-value="size">Size</BCheckbox>
                         </BField>
                     </div>
                 </div>
@@ -80,13 +88,11 @@
                         class="has-text-weight-semibold is-size-5"
                         style="margin-bottom: 15px"
                     >Advanced</p>
-                    <BField>
-                        <BTooltip :label="username">
-                            <Button
-                                class="button is-primary"
-                                @click="generateUsername"
-                            >Generate username</Button>
-                        </BTooltip>
+                    <BField :label="`Current: ${username}`">
+                        <Button
+                            class="button is-primary"
+                            @click="generateUsername"
+                        >Generate username</Button>
                     </BField>
                 </div>
             </div>
@@ -97,7 +103,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 import generateRandomUsername from '../utils/utils';
+import { Theme, ConfigState } from '../types/types';
+import ApplicationTheme from '../theme';
 
 const { mapFields } = require('vuex-map-fields');
 
@@ -122,9 +131,12 @@ const { mapFields } = require('vuex-map-fields');
 })
 export default class Settings extends Vue {
     showAdvanced: boolean = false;
+    availableThemes!: Theme[];
 
     @Watch('selectedTheme')
     /* eslint-disable-next-line */
+    onThemeChanged(newTheme: Theme, oldTheme: Theme) {
+        ApplicationTheme.set(newTheme);
     }
 
     mounted() {
@@ -156,7 +168,9 @@ export default class Settings extends Vue {
     }
 
     closeWindow() {
+        this.$store.dispatch('config/setSettings');
         window.removeEventListener('keyup', this.handleEscKey);
+        window.removeEventListener('keyup', this.toggleAdvanced);
         this.$router.go(-1);
     }
 }

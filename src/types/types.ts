@@ -1,5 +1,9 @@
 export interface RootState {}
 
+export interface Theme {
+    name: string;
+    file: string;
+}
 export interface ConfigState {
     visibleColumns: {
         bot: boolean;
@@ -14,6 +18,8 @@ export interface ConfigState {
     uniqueEpisodesOnly: boolean;
     downloadPath: string;
     username: string;
+    availableThemes: Theme[];
+    selectedTheme: Theme;
 }
 
 export interface ApplicationState {

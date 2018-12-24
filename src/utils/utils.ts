@@ -22,8 +22,8 @@ async function generateRandomUsername() {
 }
 
 function setUsername(username: string) {
-    store.dispatch('set', {
-        key: 'username',
+    store.commit('config/updateField', {
+        path: 'username',
         value: username,
     });
 }

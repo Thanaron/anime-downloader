@@ -3,6 +3,7 @@ import store from '../../config';
 import { ConfigState, RootState } from '@/types/types';
 
 const { getField, updateField } = require('vuex-map-fields');
+
 const state: ConfigState = {
     visibleColumns: {
         bot: false,
@@ -34,16 +35,18 @@ const actions: ActionTree<ConfigState, RootState> = {
         const { config } = store.store;
 
         Object.entries(config).forEach(([key, value]) => {
-            commit('set', { key, value });
+            commit('updateField', { path: key, value });
         });
     },
-    set({ commit }, data: any) {
-        commit('set', data);
-        store.set(`config.${data.key}`, data.value);
+    setSettings({ state }) {
+        Object.entries(state).forEach(([key, value]) => {
+            store.set(`config.${key}`, value);
+        });
     },
 };
 
 export const config: Module<ConfigState, RootState> = {
+    namespaced: true,
     state,
     getters,
     mutations,
