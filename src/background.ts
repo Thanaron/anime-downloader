@@ -7,11 +7,13 @@ import {
     ipcMain,
     globalShortcut,
 } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import {
     createProtocol,
     installVueDevtools,
 } from 'vue-cli-plugin-electron-builder/lib';
+import { autoUpdater } from 'electron-updater';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
@@ -23,19 +25,15 @@ autoUpdater.logger = log;
 
 log.info('App starting...');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-if (isDevelopment) {
-    // Don't load any native (external) modules until the following line is run:
-    require('module').globalPaths.push(process.env.NODE_MODULES_PATH);
-}
-
-// global reference to mainWindow (necessary to prevent window from being garbage collected)
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: any;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true });
-function createMainWindow() {
-    const window = new BrowserWindow({
+function createWindow() {
+    // Create the browser window.
+    mainWindow = new BrowserWindow({
         backgroundColor: '#2E3440',
         width: 800,
         height: 770,
@@ -48,47 +46,41 @@ function createMainWindow() {
         },
     });
 
-    if (isDevelopment) {
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
-        window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-        if (!process.env.IS_TEST)
-            window.webContents.openDevTools({ mode: 'bottom' });
+        mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+        if (!process.env.IS_TEST) mainWindow.webContents.openDevTools();
     } else {
         createProtocol('app');
-        //   Load the index.html when not in development
-        window.loadURL('app://./index.html');
+        // Load the index.html when not in development
+        mainWindow.loadURL('app://./index.html');
     }
 
-    window.on('closed', () => {
+    mainWindow.on('closed', () => {
         mainWindow = null;
     });
-
-    window.webContents.on('devtools-opened', () => {
-        window.focus();
-        setImmediate(() => {
-            window.focus();
-        });
-    });
-
-    return window;
 }
 
-// quit application when all windows are closed
+// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // on macOS it is common for applications to stay open until the user explicitly quits
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
 app.on('activate', () => {
-    // on macOS it is common to re-create a window even after all windows have been closed
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        mainWindow = createMainWindow();
+        createWindow();
     }
 });
 
-// create main BrowserWindow when electron is ready
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
@@ -98,12 +90,29 @@ app.on('ready', async () => {
         autoUpdater.checkForUpdates();
     }
 
-    mainWindow = createMainWindow();
+    createWindow();
 
     globalShortcut.register('CommandOrControl+Shift+D', () => {
         mainWindow.webContents.openDevTools({ mode: 'bottom' });
     });
 });
+
+// Exit cleanly on request from parent process in development mode.
+if (isDevelopment) {
+    if (process.platform === 'win32') {
+        process.on('message', data => {
+            if (data === 'graceful-exit') {
+                app.quit();
+            }
+        });
+    } else {
+        process.on('SIGTERM', () => {
+            app.quit();
+        });
+    }
+}
+
+// Auto updater
 
 autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...');
