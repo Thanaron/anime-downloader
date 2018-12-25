@@ -5,7 +5,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import SetupModal from './components/SetupModal.vue';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
@@ -13,21 +12,8 @@ const unhandled = require('electron-unhandled');
 @Component
 export default class App extends Vue {
     created() {
-        unhandled({ logger: log.error });
+        unhandled({ logger: log.error, showDialog: false });
         this.$store.dispatch('loadCurrentSettings');
-    }
-
-    mounted() {
-        if (
-            !this.$store.state.username ||
-            this.$store.state.username.length === 0
-        ) {
-            this.$modal.open({
-                component: SetupModal,
-                hasModalCard: true,
-                parent: this,
-            });
-        }
     }
 }
 </script>
@@ -43,6 +29,6 @@ export default class App extends Vue {
 
 .app {
     -webkit-user-select: none;
-    animation: fadeIn 0.5s;
+    animation: fadeIn 500ms;
 }
 </style>

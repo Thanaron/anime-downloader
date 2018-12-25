@@ -1,15 +1,22 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import {
+    app,
+    protocol,
+    BrowserWindow,
+    ipcMain,
+    globalShortcut,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
-import * as path from 'path';
-import { format as formatUrl } from 'url';
-import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+import {
+    createProtocol,
+    installVueDevtools,
+} from 'vue-cli-plugin-electron-builder/lib';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
 
-unhandled({ logger: log.error });
+unhandled({ logger: log.error, showDialog: true });
 
 autoUpdater.logger = log;
 (autoUpdater.logger as any).transports.file.level = 'info';
@@ -44,7 +51,8 @@ function createMainWindow() {
     if (isDevelopment) {
         // Load the url of the dev server if in development mode
         window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-        if (!process.env.IS_TEST) window.webContents.openDevTools({ mode: 'bottom' });
+        if (!process.env.IS_TEST)
+            window.webContents.openDevTools({ mode: 'bottom' });
     } else {
         createProtocol('app');
         //   Load the index.html when not in development
@@ -90,6 +98,10 @@ app.on('ready', async () => {
         autoUpdater.autoDownload = false;
         autoUpdater.checkForUpdates();
     }
+
+    globalShortcut.register('CommandOrControl+Shift+D', () => {
+        mainWindow.webContents.openDevTools({ mode: 'bottom' });
+    });
 });
 
 autoUpdater.on('checking-for-update', () => {

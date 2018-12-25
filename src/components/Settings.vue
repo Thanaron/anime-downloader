@@ -1,0 +1,208 @@
+<template>
+    <div>
+        <div class="columns">
+            <div class="column">
+                <div class="has-text-weight-bold is-size-3">Settings</div>
+            </div>
+            <div class="column is-1 is-narrow">
+                <div class="close-button is-pulled-right">
+                    <a class="delete is-large" @click="closeWindow"></a>
+                    <span class="has-text-grey-lighter has-text-weight-semibold">ESC</span>
+                </div>
+            </div>
+        </div>
+        <div class="comp-content">
+            <div class="columns is-8">
+                <div class="column">
+                    <p
+                        class="has-text-weight-semibold is-size-5"
+                        style="margin-bottom: 15px"
+                    >Application</p>
+                    <BField>
+                        <BCheckbox v-model="autoDownload">Automatically start downloading</BCheckbox>
+                    </BField>
+                    <BField label="Download path"/>
+                    <BField>
+                        <BInput expanded v-model="downloadPath"/>
+                    </BField>
+                    <hr>
+                    <p
+                        class="has-text-weight-semibold is-size-5"
+                        style="margin-bottom: 15px"
+                    >Updates</p>
+                    <BField>
+                        <BCheckbox disabled v-model="autoCheckUpdate">Check for updates on startup</BCheckbox>
+                    </BField>
+                </div>
+                <div class="column">
+                    <p class="has-text-weight-semibold is-size-5" style="margin-bottom: 15px">Search</p>
+                    <div style="margin-bottom: 10px">
+                        <BField label="General">
+                            <BTooltip
+                                multilined
+                                label="Disable if you want to choose the bot to download from"
+                            >
+                                <BCheckbox
+                                    v-model="uniqueEpisodesOnly"
+                                >Only show one result per episode</BCheckbox>
+                            </BTooltip>
+                        </BField>
+                    </div>
+                    <div>
+                        <BField label="Visible columns">
+                            <BCheckbox
+                                v-model="visibleColumns"
+                                :disabled="!uniqueEpisodesOnly"
+                                native-value="bot"
+                            >Bot</BCheckbox>
+                        </BField>
+                        <BField>
+                            <BCheckbox v-model="visibleColumns" native-value="name">Name</BCheckbox>
+                        </BField>
+                        <BField>
+                            <BCheckbox v-model="visibleColumns" native-value="episode">Episode</BCheckbox>
+                        </BField>
+                        <BField>
+                            <BCheckbox v-model="visibleColumns" native-value="resolution">Resolution</BCheckbox>
+                        </BField>
+                        <BField>
+                            <BCheckbox v-model="visibleColumns" native-value="pack">Pack</BCheckbox>
+                        </BField>
+                        <BField>
+                            <BCheckbox v-model="visibleColumns" native-value="size">Size</BCheckbox>
+                        </BField>
+                    </div>
+                </div>
+            </div>
+            <div class="columns is-8" v-if="showAdvanced">
+                <div class="column">
+                    <p
+                        class="has-text-weight-semibold is-size-5"
+                        style="margin-bottom: 15px"
+                    >Advanced</p>
+                    <BField>
+                        <BTooltip :label="username">
+                            <Button
+                                class="button is-primary"
+                                @click="generateUsername"
+                            >Generate username</Button>
+                        </BTooltip>
+                    </BField>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import generateRandomUsername from '../utils/utils';
+
+@Component
+export default class Settings extends Vue {
+    showAdvanced: boolean = false;
+
+    get username(): string {
+        return this.$store.state.config.username;
+    }
+
+    get visibleColumns(): string[] {
+        return this.$store.state.config.visibleColumns;
+    }
+
+    set visibleColumns(value: string[]) {
+        if (value.length === 0) {
+            return;
+        }
+        this.updateItem('visibleColumns', value);
+    }
+
+    get autoDownload(): boolean {
+        return this.$store.state.config.autoDownload;
+    }
+
+    set autoDownload(value: boolean) {
+        this.updateItem('autoDownload', value);
+    }
+
+    get autoCheckUpdate(): boolean {
+        return this.$store.state.config.autoCheckUpdate;
+    }
+
+    set autoCheckUpdate(value: boolean) {
+        this.updateItem('autoCheckItem', value);
+    }
+
+    get uniqueEpisodesOnly(): boolean {
+        return this.$store.state.config.uniqueEpisodesOnly;
+    }
+    set uniqueEpisodesOnly(value: boolean) {
+        if (!value && !this.visibleColumns.includes('bot')) {
+            this.visibleColumns.push('bot');
+            this.updateItem('visibleColumns', this.visibleColumns);
+        } else if (value && this.visibleColumns.includes('bot')) {
+            const index = this.visibleColumns.indexOf('bot');
+            this.visibleColumns.splice(index, 1);
+            this.updateItem('visibleColumns', this.visibleColumns);
+        }
+        this.updateItem('uniqueEpisodesOnly', value);
+    }
+
+    get downloadPath(): string {
+        return this.$store.state.config.downloadPath;
+    }
+
+    set downloadPath(value: string) {
+        this.updateItem('downloadPath', value);
+    }
+
+    mounted() {
+        window.addEventListener('keyup', this.handleEscKey);
+        window.addEventListener('keyup', this.toggleAdvanced);
+    }
+
+    /* eslint-disable-next-line */
+    generateUsername() {
+        generateRandomUsername();
+    }
+
+    updateItem(key: string, value: any) {
+        this.$store.dispatch('set', { key, value });
+    }
+
+    handleEscKey(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            this.closeWindow();
+        }
+    }
+
+    toggleAdvanced(event: KeyboardEvent) {
+        if (event.keyCode === 85 && event.ctrlKey) {
+            this.showAdvanced = !this.showAdvanced;
+        }
+    }
+
+    closeWindow() {
+        window.removeEventListener('keyup', this.handleEscKey);
+        this.$router.go(-1);
+    }
+}
+</script>
+<style scoped>
+.close-button {
+    width: 32px;
+    text-align: center;
+}
+
+.close-button > span {
+    font-size: 11px;
+}
+
+.comp-content {
+    height: calc(100vh - 170px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+</style>
