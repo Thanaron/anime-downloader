@@ -1,8 +1,6 @@
-import { HSReleaseDownloadInfo } from './types/types';
-
 import ircXdcc from 'irc-xdcc';
 import log from 'electron-log';
-
+import { HSReleaseDownloadInfo } from './types/types';
 class IrcDownloader {
     public instance: any;
     public isConnected: boolean = false;

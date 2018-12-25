@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Main from './views/Main.vue';
-import Update from './views/Update.vue';
-import Home from './views/Home.vue';
-import Settings from './components/Settings.vue';
-import Download from './components/Download.vue';
+import Home from './views/main/Home.vue';
+import Settings from './views/main/Settings.vue';
+import Download from './views/main/Download.vue';
 
 Vue.use(Router);
 
@@ -30,11 +29,6 @@ export default new Router({
                     props: true,
                 },
             ],
-        },
-        {
-            path: '/update',
-            name: 'update',
-            component: Update,
         },
     ],
 });
