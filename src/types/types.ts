@@ -1,28 +1,28 @@
 export interface RootState {}
+
+export interface Theme {
+    name: string;
+    file: string;
+}
 export interface ConfigState {
-    visibleColumns: string[];
+    visibleColumns: {
+        bot: boolean;
+        name: boolean;
+        episode: boolean;
+        resolution: boolean;
+        pack: boolean;
+        size: boolean;
+    };
     autoDownload: boolean;
     autoCheckUpdate: boolean;
     uniqueEpisodesOnly: boolean;
     downloadPath: string;
     username: string;
-}
-
-export enum StatusType {
-    None = 'has-text-info',
-    Error = 'has-text-danger',
-    Warning = 'has-text-warning',
-    Info = 'has-text-info',
-    Success = 'has-text-success',
-}
-
-export interface Status {
-    message: string;
-    type: StatusType;
+    availableThemes: Theme[];
+    selectedTheme: Theme;
 }
 
 export interface ApplicationState {
-    status: Status;
     searchText: string;
     tableData: HSRelease[];
     selectedEpisodes: HSRelease[];

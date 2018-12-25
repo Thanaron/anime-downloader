@@ -7,21 +7,15 @@
                 </a>
             </RouterLink>
         </div>
-        <span class="status-text" :class="statusText.type">{{ statusText.message }}</span>
     </footer>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import status from '../status';
 
 @Component
-export default class Footer extends Vue {
-    get statusText() {
-        return this.$store.state.app.status;
-    }
-}
+export default class Footer extends Vue {}
 </script>
 <style lang="scss">
 .bottombar {
@@ -34,12 +28,5 @@ export default class Footer extends Vue {
 .download-button {
     left: -5px;
     bottom: -5px;
-}
-
-.status-text {
-    position: fixed;
-    right: 3px;
-    bottom: 1px;
-    font-size: 13px;
 }
 </style>

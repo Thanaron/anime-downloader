@@ -1,21 +1,32 @@
-import Vue from 'vue';
-import { Module, MutationTree, ActionTree } from 'vuex';
+import { Module, MutationTree, ActionTree, GetterTree } from 'vuex';
+import { getField, updateField } from 'vuex-map-fields';
 import store from '../../config';
 import { ConfigState, RootState } from '@/types/types';
 
 const state: ConfigState = {
-    visibleColumns: [],
+    visibleColumns: {
+        bot: false,
+        name: true,
+        episode: true,
+        resolution: true,
+        pack: false,
+        size: true,
+    },
     autoDownload: false,
     autoCheckUpdate: true,
     uniqueEpisodesOnly: true,
     downloadPath: '',
     username: '',
+    availableThemes: [],
+    selectedTheme: { name: 'Dark', file: 'Dark.css' },
+};
+
+const getters: GetterTree<ConfigState, RootState> = {
+    getField,
 };
 
 const mutations: MutationTree<ConfigState> = {
-    set(state: ConfigState, data: any) {
-        Vue.set(state, data.key, data.value);
-    },
+    updateField,
 };
 
 const actions: ActionTree<ConfigState, RootState> = {
@@ -23,17 +34,20 @@ const actions: ActionTree<ConfigState, RootState> = {
         const { config } = store.store;
 
         Object.entries(config).forEach(([key, value]) => {
-            commit('set', { key, value });
+            commit('updateField', { path: key, value });
         });
     },
-    set({ commit }, data: any) {
-        commit('set', data);
-        store.set(`config.${data.key}`, data.value);
+    setSettings({ state }) {
+        Object.entries(state).forEach(([key, value]) => {
+            store.set(`config.${key}`, value);
+        });
     },
 };
 
 export const config: Module<ConfigState, RootState> = {
+    namespaced: true,
     state,
+    getters,
     mutations,
     actions,
 };

@@ -5,6 +5,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Theme } from './types/types';
+import ApplicationTheme from './theme';
 
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
@@ -13,7 +15,9 @@ const unhandled = require('electron-unhandled');
 export default class App extends Vue {
     created() {
         unhandled({ logger: log.error, showDialog: false });
-        this.$store.dispatch('loadCurrentSettings');
+        this.$store.dispatch('config/loadCurrentSettings');
+
+        ApplicationTheme.set(this.$store.state.config.selectedTheme);
     }
 }
 </script>
@@ -30,5 +34,13 @@ export default class App extends Vue {
 .app {
     -webkit-user-select: none;
     animation: fadeIn 500ms;
+}
+
+select {
+    border-color: transparent;
+}
+
+a {
+    outline: none;
 }
 </style>

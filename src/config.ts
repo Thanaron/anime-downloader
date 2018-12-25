@@ -3,11 +3,22 @@ const { app } = require('electron').remote;
 
 const defaults = {
     config: {
-        visibleColumns: ['name', 'episode', 'resolution', 'size'],
+        visibleColumns: {
+            bot: false,
+            name: true,
+            episode: true,
+            resolution: true,
+            pack: false,
+            size: true,
+        },
         autoDownload: false,
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,
         downloadPath: app.getPath('downloads'),
+        selectedTheme: {
+            name: 'Dark',
+            file: 'Dark.css',
+        },
     },
 };
 

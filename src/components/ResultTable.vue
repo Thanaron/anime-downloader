@@ -14,40 +14,40 @@
                 field="bot"
                 label="Bot"
                 width="200"
-                :visible="visibleColumns.includes('bot')"
+                :visible="visibleColumns.bot === true"
             >{{ props.row.bot }}</BTableColumn>
             <BTableColumn
                 field="name"
                 label="Name"
-                :visible="visibleColumns.includes('name')"
+                :visible="visibleColumns.name === true"
             >{{ props.row.name }}</BTableColumn>
             <BTableColumn
                 field="episode"
                 label="Episode"
                 numeric
                 width="30"
-                :visible="visibleColumns.includes('episode')"
+                :visible="visibleColumns.episode === true"
             >{{ props.row.episode }}</BTableColumn>
             <BTableColumn
                 field="resolution"
                 label="Resolution"
                 numeric
                 width="100"
-                :visible="visibleColumns.includes('resolution')"
+                :visible="visibleColumns.resolution === true"
             >{{ props.row.resolution }}p</BTableColumn>
             <BTableColumn
                 field="pack"
                 label="Pack"
                 numeric
                 width="100"
-                :visible="visibleColumns.includes('pack')"
+                :visible="visibleColumns.pack === true"
             >#{{ props.row.pack }}</BTableColumn>
             <BTableColumn
                 field="size"
                 label="Size"
                 numeric
                 width="100"
-                :visible="visibleColumns.includes('size')"
+                :visible="visibleColumns.size === true"
             >{{ props.row.size }} MB</BTableColumn>
         </template>
     </BTable>

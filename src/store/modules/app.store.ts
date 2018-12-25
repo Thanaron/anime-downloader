@@ -1,14 +1,7 @@
 import { MutationTree, ActionTree, Module } from 'vuex';
-import {
-    ApplicationState,
-    HSRelease,
-    Status,
-    RootState,
-    StatusType,
-} from '@/types/types';
+import { ApplicationState, HSRelease, RootState } from '@/types/types';
 
 const state: ApplicationState = {
-    status: { message: 'Ready', type: StatusType.Info },
     searchText: '',
     tableData: [] as HSRelease[],
     selectedEpisodes: [] as HSRelease[],
@@ -34,9 +27,6 @@ const mutations: MutationTree<ApplicationState> = {
             const index = state.selectedEpisodes.indexOf(episode);
             state.selectedEpisodes.splice(index, 1);
         }
-    },
-    setStatus(state: ApplicationState, status: Status) {
-        state.status = status;
     },
 };
 

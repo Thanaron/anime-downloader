@@ -21,9 +21,17 @@
                     <BField>
                         <BCheckbox v-model="autoDownload">Automatically start downloading</BCheckbox>
                     </BField>
-                    <BField label="Download path"/>
-                    <BField>
+                    <BField label="Download path">
                         <BInput expanded v-model="downloadPath"/>
+                    </BField>
+                    <BField label="Theme">
+                        <BSelect expanded v-model="selectedTheme">
+                            <option
+                                v-for="theme in availableThemes"
+                                :key="theme.name"
+                                :value="theme"
+                            >{{ theme.name }}</option>
+                        </BSelect>
                     </BField>
                     <hr>
                     <p
@@ -51,25 +59,25 @@
                     <div>
                         <BField label="Visible columns">
                             <BCheckbox
-                                v-model="visibleColumns"
+                                v-model="bot"
                                 :disabled="!uniqueEpisodesOnly"
                                 native-value="bot"
                             >Bot</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="name">Name</BCheckbox>
+                            <BCheckbox v-model="name" native-value="name">Name</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="episode">Episode</BCheckbox>
+                            <BCheckbox v-model="episode" native-value="episode">Episode</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="resolution">Resolution</BCheckbox>
+                            <BCheckbox v-model="resolution" native-value="resolution">Resolution</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="pack">Pack</BCheckbox>
+                            <BCheckbox v-model="pack" native-value="pack">Pack</BCheckbox>
                         </BField>
                         <BField>
-                            <BCheckbox v-model="visibleColumns" native-value="size">Size</BCheckbox>
+                            <BCheckbox v-model="size" native-value="size">Size</BCheckbox>
                         </BField>
                     </div>
                 </div>
@@ -80,13 +88,11 @@
                         class="has-text-weight-semibold is-size-5"
                         style="margin-bottom: 15px"
                     >Advanced</p>
-                    <BField>
-                        <BTooltip :label="username">
-                            <Button
-                                class="button is-primary"
-                                @click="generateUsername"
-                            >Generate username</Button>
-                        </BTooltip>
+                    <BField :label="`Current: ${username}`">
+                        <Button
+                            class="button is-primary"
+                            @click="generateUsername"
+                        >Generate username</Button>
                     </BField>
                 </div>
             </div>
@@ -97,78 +103,63 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { mapFields } from 'vuex-map-fields';
 import generateRandomUsername from '../utils/utils';
+import { Theme, ConfigState } from '../types/types';
+import ApplicationTheme from '../theme';
 
-@Component
+@Component({
+    computed: {
+        ...mapFields('config', [
+            'username',
+            'autoDownload',
+            'uniqueEpisodesOnly',
+            'downloadPath',
+            'autoCheckUpdate',
+            'visibleColumns.bot',
+            'visibleColumns.name',
+            'visibleColumns.episode',
+            'visibleColumns.resolution',
+            'visibleColumns.pack',
+            'visibleColumns.size',
+            'availableThemes',
+            'selectedTheme',
+        ]),
+    },
+})
 export default class Settings extends Vue {
     showAdvanced: boolean = false;
+    availableThemes!: Theme[];
 
-    get username(): string {
-        return this.$store.state.config.username;
-    }
-
-    get visibleColumns(): string[] {
-        return this.$store.state.config.visibleColumns;
-    }
-
-    set visibleColumns(value: string[]) {
-        if (value.length === 0) {
-            return;
-        }
-        this.updateItem('visibleColumns', value);
-    }
-
-    get autoDownload(): boolean {
-        return this.$store.state.config.autoDownload;
-    }
-
-    set autoDownload(value: boolean) {
-        this.updateItem('autoDownload', value);
-    }
-
-    get autoCheckUpdate(): boolean {
-        return this.$store.state.config.autoCheckUpdate;
-    }
-
-    set autoCheckUpdate(value: boolean) {
-        this.updateItem('autoCheckItem', value);
-    }
-
-    get uniqueEpisodesOnly(): boolean {
-        return this.$store.state.config.uniqueEpisodesOnly;
-    }
-    set uniqueEpisodesOnly(value: boolean) {
-        if (!value && !this.visibleColumns.includes('bot')) {
-            this.visibleColumns.push('bot');
-            this.updateItem('visibleColumns', this.visibleColumns);
-        } else if (value && this.visibleColumns.includes('bot')) {
-            const index = this.visibleColumns.indexOf('bot');
-            this.visibleColumns.splice(index, 1);
-            this.updateItem('visibleColumns', this.visibleColumns);
-        }
-        this.updateItem('uniqueEpisodesOnly', value);
-    }
-
-    get downloadPath(): string {
-        return this.$store.state.config.downloadPath;
-    }
-
-    set downloadPath(value: string) {
-        this.updateItem('downloadPath', value);
+    @Watch('selectedTheme')
+    /* eslint-disable-next-line */
+    onThemeChanged(newTheme: Theme, oldTheme: Theme) {
+        const loadingComponent = this.$loading.open({
+            isFullPage: true,
+        });
+        setTimeout(() => {
+            ApplicationTheme.set(newTheme);
+            setTimeout(() => {
+                loadingComponent.close();
+            }, 400);
+        }, 300);
     }
 
     mounted() {
         window.addEventListener('keyup', this.handleEscKey);
         window.addEventListener('keyup', this.toggleAdvanced);
+
+        this.loadThemes();
+    }
+
+    loadThemes() {
+        this.availableThemes = ApplicationTheme.getAvailableThemes();
     }
 
     /* eslint-disable-next-line */
     generateUsername() {
         generateRandomUsername();
-    }
-
-    updateItem(key: string, value: any) {
-        this.$store.dispatch('set', { key, value });
     }
 
     handleEscKey(event: KeyboardEvent) {
@@ -184,7 +175,9 @@ export default class Settings extends Vue {
     }
 
     closeWindow() {
+        this.$store.dispatch('config/setSettings');
         window.removeEventListener('keyup', this.handleEscKey);
+        window.removeEventListener('keyup', this.toggleAdvanced);
         this.$router.go(-1);
     }
 }
