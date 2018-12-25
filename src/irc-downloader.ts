@@ -1,7 +1,7 @@
 import { HSReleaseDownloadInfo } from './types/types';
 
-const ircXdcc = require('irc-xdcc');
-const log = require('electron-log');
+import ircXdcc from 'irc-xdcc';
+import log from 'electron-log';
 
 class IrcDownloader {
     public instance: any;
@@ -168,7 +168,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-canceled', (xdccInstance: XdccInstance) => {
-            log.warning(
+            log.warn(
                 `XDCC-CANCELED: XDCC transfer has been canceled: ${JSON.stringify(
                     xdccInstance
                 )}`
