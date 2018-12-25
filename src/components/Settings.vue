@@ -104,11 +104,10 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
+import { mapFields } from 'vuex-map-fields';
 import generateRandomUsername from '../utils/utils';
 import { Theme, ConfigState } from '../types/types';
 import ApplicationTheme from '../theme';
-
-const { mapFields } = require('vuex-map-fields');
 
 @Component({
     computed: {
@@ -136,7 +135,15 @@ export default class Settings extends Vue {
     @Watch('selectedTheme')
     /* eslint-disable-next-line */
     onThemeChanged(newTheme: Theme, oldTheme: Theme) {
-        ApplicationTheme.set(newTheme);
+        const loadingComponent = this.$loading.open({
+            isFullPage: true,
+        });
+        setTimeout(() => {
+            ApplicationTheme.set(newTheme);
+            setTimeout(() => {
+                loadingComponent.close();
+            }, 400);
+        }, 300);
     }
 
     mounted() {
