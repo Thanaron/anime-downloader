@@ -1,16 +1,6 @@
 <template>
     <div>
-        <div class="columns">
-            <div class="column">
-                <div class="has-text-weight-bold is-size-3">Settings</div>
-            </div>
-            <div class="column is-1 is-narrow">
-                <div class="close-button is-pulled-right">
-                    <a class="delete is-large" @click="closeWindow"></a>
-                    <span class="has-text-grey-lighter has-text-weight-semibold">ESC</span>
-                </div>
-            </div>
-        </div>
+        <WindowHeader title="Settings" :onClose="onClose"/>
         <div class="comp-content">
             <div class="columns is-8">
                 <div class="column">
@@ -105,11 +95,13 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { mapFields } from 'vuex-map-fields';
-import generateRandomUsername from '../utils/utils';
-import { Theme, ConfigState } from '../types/types';
-import ApplicationTheme from '../theme';
+import generateRandomUsername from '../../utils/utils';
+import { Theme, ConfigState } from '../../types/types';
+import ApplicationTheme from '../../theme';
+import WindowHeader from '../../components/WindowHeader.vue';
 
 @Component({
+    components: { WindowHeader },
     computed: {
         ...mapFields('config', [
             'username',
@@ -147,7 +139,6 @@ export default class Settings extends Vue {
     }
 
     mounted() {
-        window.addEventListener('keyup', this.handleEscKey);
         window.addEventListener('keyup', this.toggleAdvanced);
 
         this.loadThemes();
@@ -162,36 +153,19 @@ export default class Settings extends Vue {
         generateRandomUsername();
     }
 
-    handleEscKey(event: KeyboardEvent) {
-        if (event.key === 'Escape') {
-            this.closeWindow();
-        }
-    }
-
     toggleAdvanced(event: KeyboardEvent) {
         if (event.keyCode === 85 && event.ctrlKey) {
             this.showAdvanced = !this.showAdvanced;
         }
     }
 
-    closeWindow() {
+    onClose() {
         this.$store.dispatch('config/setSettings');
-        window.removeEventListener('keyup', this.handleEscKey);
         window.removeEventListener('keyup', this.toggleAdvanced);
-        this.$router.go(-1);
     }
 }
 </script>
 <style scoped>
-.close-button {
-    width: 32px;
-    text-align: center;
-}
-
-.close-button > span {
-    font-size: 11px;
-}
-
 .comp-content {
     height: calc(100vh - 170px);
     box-sizing: border-box;

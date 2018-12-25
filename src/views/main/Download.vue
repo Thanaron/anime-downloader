@@ -1,9 +1,6 @@
 <template>
     <div>
-        <div class="columns is-vcentered">
-            <div class="column is-narrow">
-                <div class="has-text-weight-bold is-size-3">Download episodes</div>
-            </div>
+        <WindowHeader title="Download episodes" closable :onClose="onClose">
             <div class="column">
                 <BTooltip label="Start download">
                     <button
@@ -16,13 +13,7 @@
                     </button>
                 </BTooltip>
             </div>
-            <div class="column is-1 is-narrow">
-                <div class="close-button is-pulled-right">
-                    <a class="delete is-large" @click="closeWindow"></a>
-                    <span class="has-text-grey-lighter has-text-weight-semibold">ESC</span>
-                </div>
-            </div>
-        </div>
+        </WindowHeader>
         <div class="comp-content">
             <div v-for="entry in episodesToDownload" :key="entry.pack" style="margin-bottom: 20px;">
                 <div style="width: 100%;">
@@ -56,13 +47,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import IrcDownloader from '../irc-downloader';
-import generateRandomUsername from '../utils/utils';
-import { HSRelease, HSReleaseDownloadInfo } from '../types/types';
+import IrcDownloader from '../../irc-downloader';
+import generateRandomUsername from '../../utils/utils';
+import { HSRelease, HSReleaseDownloadInfo } from '../../types/types';
+import WindowHeader from '../../components/WindowHeader.vue';
 
 const log = require('electron-log');
 
-@Component
+@Component({
+    components: { WindowHeader },
+})
 export default class Download extends Vue {
     downloadStarted = false;
     downloader!: IrcDownloader;
@@ -100,8 +94,6 @@ export default class Download extends Vue {
         if (this.$store.state.config.autoDownload) {
             this.performDownload();
         }
-
-        window.addEventListener('keyup', this.handleEscKey);
     }
 
     async performDownload() {
@@ -117,21 +109,6 @@ export default class Download extends Vue {
             key: 'username',
             value: username,
         });
-    }
-
-    handleEscKey(event: KeyboardEvent) {
-        if (event.key === 'Escape') {
-            this.closeWindow();
-        }
-    }
-
-    closeWindow() {
-        window.removeEventListener('keyup', this.handleEscKey);
-        if (this.downloader && this.downloader.isConnected) {
-            this.downloader.disconnect();
-        }
-
-        this.$router.go(-1);
     }
 
     onCancel() {
@@ -150,18 +127,15 @@ export default class Download extends Vue {
             onConfirm: () => this.performDownload(),
         });
     }
+
+    onClose() {
+        if (this.downloader && this.downloader.isConnected) {
+            this.downloader.disconnect();
+        }
+    }
 }
 </script>
 <style lang="scss" scoped>
-.close-button {
-    width: 32px;
-    text-align: center;
-}
-
-.close-button > span {
-    font-size: 11px;
-}
-
 .comp-content {
     height: calc(100vh - 170px);
     box-sizing: border-box;
