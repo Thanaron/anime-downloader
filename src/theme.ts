@@ -7,7 +7,7 @@ class ApplicationTheme {
     static set(theme: Theme) {
         ApplicationTheme.removeExistingThemeIfNeeded();
 
-        const themeInDirectory = path.join(__static, 'css', theme.file);
+        const themeInDirectory = path.join(__static, 'themes', theme.file);
 
         const link = document.createElement('link');
         link.type = 'text/css';
@@ -32,7 +32,7 @@ class ApplicationTheme {
         const themes: Theme[] = [];
 
         fs.readdir(
-            path.join(__static, 'css'),
+            path.join(__static, 'themes'),
             (err: string, items: string[]) => {
                 items.forEach((item: string) => {
                     const name = item.substring(0, item.length - 4);

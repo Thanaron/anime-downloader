@@ -15,6 +15,10 @@ const defaults = {
         autoCheckUpdate: true,
         uniqueEpisodesOnly: true,
         downloadPath: app.getPath('downloads'),
+        selectedTheme: {
+            name: 'Dark',
+            file: 'Dark.css',
+        },
     },
 };
 

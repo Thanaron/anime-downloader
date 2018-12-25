@@ -1,8 +1,7 @@
 import { Module, MutationTree, ActionTree, GetterTree } from 'vuex';
+import { getField, updateField } from 'vuex-map-fields';
 import store from '../../config';
 import { ConfigState, RootState } from '@/types/types';
-
-const { getField, updateField } = require('vuex-map-fields');
 
 const state: ConfigState = {
     visibleColumns: {
@@ -19,7 +18,7 @@ const state: ConfigState = {
     downloadPath: '',
     username: '',
     availableThemes: [],
-    selectedTheme: { name: 'light', file: 'light.css' },
+    selectedTheme: { name: 'Dark', file: 'Dark.css' },
 };
 
 const getters: GetterTree<ConfigState, RootState> = {
