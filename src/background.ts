@@ -93,11 +93,12 @@ app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         await installVueDevtools();
-        mainWindow = createMainWindow();
     } else {
         autoUpdater.autoDownload = false;
         autoUpdater.checkForUpdates();
     }
+
+    mainWindow = createMainWindow();
 
     globalShortcut.register('CommandOrControl+Shift+D', () => {
         mainWindow.webContents.openDevTools({ mode: 'bottom' });
@@ -108,58 +109,31 @@ autoUpdater.on('checking-for-update', () => {
     log.info('Checking for update...');
 });
 
-let updateWindow: any;
-
 autoUpdater.on('update-available', info => {
     log.info(`Update available: ${JSON.stringify(info)}`);
 
-    updateWindow = new BrowserWindow({
-        frame: false,
-        transparent: true,
-        maximizable: false,
-        parent: mainWindow,
-        acceptFirstMouse: true,
+    mainWindow.webContents.send('updateAvailable', {
+        version: info.releaseName,
+        notes: info.releaseNotes,
     });
-
-    createProtocol('app');
-    updateWindow.loadURL('app://./index.html#update');
-    updateWindow.show();
-    updateWindow.webContents.on('did-finish-load', () => {
-        updateWindow.webContents.send('updateInfo', {
-            version: info.releaseName,
-            notes: info.releaseNotes,
-        });
-    });
-});
-
-ipcMain.on('openMainWindow', () => {
-    mainWindow = createMainWindow();
-    updateWindow.close();
-    updateWindow = null;
+    autoUpdater.downloadUpdate();
 });
 
 autoUpdater.on('update-not-available', info => {
     log.info(`Update not available: ${JSON.stringify(info)}`);
-    updateWindow = null;
-
-    mainWindow = createMainWindow();
 });
 
 autoUpdater.on('error', (ev, err) => {
-    log.info(`Error in auto-updater: ${err}`);
+    log.error(`Error in auto-updater: ${err}`);
 });
 
 autoUpdater.on('download-progress', progress => {
-    updateWindow.webContents.send('updateDownloadProgress', progress.percent);
+    mainWindow.webContents.send('updateDownloadProgress', progress.percent);
 });
 
 autoUpdater.on('update-downloaded', (ev, info) => {
     log.info(`Update downloaded successfully. ${JSON.stringify(info)}`);
-    updateWindow.webContents.send('updateDownloaded');
-});
-
-ipcMain.on('downloadUpdate', () => {
-    autoUpdater.downloadUpdate();
+    mainWindow.webContents.send('updateDownloaded');
 });
 
 ipcMain.on('installUpdate', () => {
