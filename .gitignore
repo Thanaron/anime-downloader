@@ -27,3 +27,5 @@ yarn-error.log*
 
 themes/*.css.map
 public/themes
+
+*.log
