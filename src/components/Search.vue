@@ -38,7 +38,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import Packlist from '../packlist';
 
-const log = require('electron-log');
+import logger from '../utils/logger';
 
 @Component
 export default class Search extends Vue {
@@ -70,7 +70,7 @@ export default class Search extends Vue {
                 this.$store.dispatch('setTableData', result);
             })
             .catch(err => {
-                log.error(err);
+                logger.error(err);
             });
     }
 }

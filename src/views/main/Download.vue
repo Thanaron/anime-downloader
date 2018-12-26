@@ -52,8 +52,6 @@ import generateRandomUsername from '../../utils/utils';
 import { HSRelease, HSReleaseDownloadInfo } from '../../types/types';
 import WindowHeader from '../../components/WindowHeader.vue';
 
-const log = require('electron-log');
-
 @Component({
     components: { WindowHeader },
 })

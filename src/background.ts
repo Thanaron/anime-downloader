@@ -15,15 +15,11 @@ import { autoUpdater } from 'electron-updater';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const log = require('electron-log');
-const unhandled = require('electron-unhandled');
+import logger from './utils/logger';
 
-unhandled({ logger: log.error, showDialog: true });
+autoUpdater.logger = logger.debug;
 
-autoUpdater.logger = log;
-(autoUpdater.logger as any).transports.file.level = 'info';
-
-log.info('App starting...');
+logger.info('App starting...');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -32,6 +28,8 @@ let mainWindow: any;
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true });
 function createWindow() {
+    logger.debug('Creating mainwindow');
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
         backgroundColor: '#2E3440',
@@ -54,6 +52,8 @@ function createWindow() {
         createProtocol('app');
         // Load the index.html when not in development
         mainWindow.loadURL('app://./index.html');
+
+        logger.debug('Loading app content');
     }
 
     mainWindow.on('closed', () => {
@@ -82,6 +82,8 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    logger.debug('Application is ready to create windows');
+
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         await installVueDevtools();
@@ -115,11 +117,11 @@ if (isDevelopment) {
 // Auto updater
 
 autoUpdater.on('checking-for-update', () => {
-    log.info('Checking for update...');
+    logger.info('Checking for update...');
 });
 
 autoUpdater.on('update-available', info => {
-    log.info(`Update available: ${JSON.stringify(info)}`);
+    logger.info('Update available: %j', info);
 
     mainWindow.webContents.send('updateAvailable', {
         version: info.releaseName,
@@ -129,19 +131,20 @@ autoUpdater.on('update-available', info => {
 });
 
 autoUpdater.on('update-not-available', info => {
-    log.info(`Update not available: ${JSON.stringify(info)}`);
+    logger.info('Update not available: %j', info);
 });
 
 autoUpdater.on('error', (ev, err) => {
-    log.error(`Error in auto-updater: ${err}`);
+    logger.error('Error in auto-updater: %s', err);
 });
 
 autoUpdater.on('download-progress', progress => {
+    logger.debug('Downloading update: %j', progress);
     mainWindow.webContents.send('updateDownloadProgress', progress.percent);
 });
 
 autoUpdater.on('update-downloaded', (ev, info) => {
-    log.info(`Update downloaded successfully. ${JSON.stringify(info)}`);
+    logger.info('Update downloaded successfully. %j', info);
     mainWindow.webContents.send('updateDownloaded');
 });
 

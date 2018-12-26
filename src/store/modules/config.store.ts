@@ -17,8 +17,8 @@ const state: ConfigState = {
     uniqueEpisodesOnly: true,
     downloadPath: '',
     username: '',
-    availableThemes: [],
     selectedTheme: { name: 'Dark', file: 'Dark.css' },
+    logLevel: 'info',
 };
 
 const getters: GetterTree<ConfigState, RootState> = {

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const log = require('electron-log');
+import logger from './utils/logger';
 
 class Packlist {
     static async search(
@@ -15,7 +14,7 @@ class Packlist {
             );
             return response.data;
         } catch (err) {
-            log.error(err);
+            logger.error(err);
         }
     }
 }
