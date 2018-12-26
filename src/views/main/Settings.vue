@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{'fade-anim': loadingTheme}">
         <WindowHeader title="Settings" :onClose="onClose"/>
         <div class="comp-content">
             <div class="columns is-8">
@@ -84,6 +84,14 @@
                             @click="generateUsername"
                         >Generate username</Button>
                     </BField>
+                    <BField label="Log level">
+                        <BSelect v-model="logLevel">
+                            <option value="debug">Debug</option>
+                            <option value="info">Info</option>
+                            <option value="warn">Warn</option>
+                            <option value="error">Error</option>
+                        </BSelect>
+                    </BField>
                 </div>
             </div>
         </div>
@@ -99,6 +107,7 @@ import generateRandomUsername from '../../utils/utils';
 import { Theme, ConfigState } from '../../types/types';
 import ApplicationTheme from '../../theme';
 import WindowHeader from '../../components/WindowHeader.vue';
+import { setLevel } from '../../utils/logger';
 
 @Component({
     components: { WindowHeader },
@@ -115,27 +124,32 @@ import WindowHeader from '../../components/WindowHeader.vue';
             'visibleColumns.resolution',
             'visibleColumns.pack',
             'visibleColumns.size',
-            'availableThemes',
             'selectedTheme',
+            'logLevel',
         ]),
     },
 })
 export default class Settings extends Vue {
     showAdvanced: boolean = false;
-    availableThemes!: Theme[];
+    availableThemes: Theme[] = [];
+    loadingTheme: boolean = false;
 
     @Watch('selectedTheme')
     /* eslint-disable-next-line */
     onThemeChanged(newTheme: Theme, oldTheme: Theme) {
-        const loadingComponent = this.$loading.open({
-            isFullPage: true,
-        });
+        this.loadingTheme = true;
         setTimeout(() => {
             ApplicationTheme.set(newTheme);
             setTimeout(() => {
-                loadingComponent.close();
-            }, 400);
-        }, 300);
+                this.loadingTheme = false;
+            }, 500);
+        }, 500);
+    }
+
+    @Watch('logLevel')
+    /* eslint-disable-next-line */
+    onLogLevelChanged(newLevel: string, oldLevel: string) {
+        setLevel(newLevel);
     }
 
     mounted() {
@@ -171,5 +185,25 @@ export default class Settings extends Vue {
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.fade-anim {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 </style>
