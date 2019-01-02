@@ -1,17 +1,13 @@
-const winston = require('winston');
+import winston from 'winston';
 const { ConsoleForElectron } = require('winston-console-for-electron');
 const { format } = require('logform');
 
-require('winston-daily-rotate-file');
-
 const timestampFormat = format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' });
 
-const fileTransport = new winston.transports.DailyRotateFile({
-    filename: `application-%DATE%.log`,
-    datePattern: 'YYYY-MM',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d',
+const fileTransport = new winston.transports.File({
+    filename: 'app.log',
+    maxsize: 10485760,
+    maxFiles: 10,
 });
 
 const consoleTransport = new ConsoleForElectron({
@@ -41,7 +37,7 @@ const fileFormat = format.combine(
 );
 
 const logger = winston.createLogger({
-    level: 'silly',
+    level: 'debug',
     format: fileFormat,
     transports: fileTransport,
     exceptionHandlers: fileTransport,

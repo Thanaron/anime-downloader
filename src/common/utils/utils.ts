@@ -1,6 +1,5 @@
 import axios from 'axios';
-import store from '../store/store';
-
+import store from '@/common/store/store';
 import logger from './logger';
 
 async function generateRandomUsername() {

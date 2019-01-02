@@ -18,8 +18,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Titlebar from '../components/Titlebar.vue';
-import Footer from '../components/Footer.vue';
+import Titlebar from '@/components/Titlebar.vue';
+import Footer from '@/components/Footer.vue';
 
 @Component({
     components: {

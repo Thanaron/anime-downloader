@@ -103,11 +103,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { mapFields } from 'vuex-map-fields';
-import generateRandomUsername from '../../utils/utils';
-import { Theme, ConfigState } from '../../types/types';
-import ApplicationTheme from '../../theme';
-import WindowHeader from '../../components/WindowHeader.vue';
-import { setLevel } from '../../utils/logger';
+import generateRandomUsername from '@/common/utils/utils';
+import { Theme, ConfigState } from '@/types/types';
+import ApplicationTheme from '@/common/theme';
+import WindowHeader from '@/components/WindowHeader.vue';
+import { setLevel } from '@/common/utils/logger';
 
 @Component({
     components: { WindowHeader },

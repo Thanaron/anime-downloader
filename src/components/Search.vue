@@ -36,7 +36,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Packlist from '../packlist';
+import Packlist from '@/common/packlist';
+import logger from '@/common/utils/logger';
 
 import logger from '../utils/logger';
 

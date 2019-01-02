@@ -1,7 +1,7 @@
 import ircXdcc from 'irc-xdcc';
-import logger from './utils/logger';
+import logger from '@/common/utils/logger';
+import { HSReleaseDownloadInfo } from '@/types/types';
 
-import { HSReleaseDownloadInfo } from './types/types';
 class IrcDownloader {
     public instance: any;
     public isConnected: boolean = false;

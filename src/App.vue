@@ -5,14 +5,21 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Theme } from './types/types';
-import ApplicationTheme from './theme';
+import { Theme } from '@/types/types';
+import ApplicationTheme from '@/common/theme';
+import logger, { setLevel } from '@/common/utils/logger';
 
 @Component
 export default class App extends Vue {
     created() {
+        logger.debug('Preparing application');
+
         this.$store.dispatch('config/loadCurrentSettings');
         ApplicationTheme.set(this.$store.state.config.selectedTheme);
+
+        setLevel(this.$store.state.config.logLevel);
+
+        logger.debug('Creating application..');
     }
 }
 </script>

@@ -12,18 +12,17 @@ import {
     installVueDevtools,
 } from 'vue-cli-plugin-electron-builder/lib';
 import { autoUpdater } from 'electron-updater';
+import logger from './common/utils/logger';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-import logger from './utils/logger';
-
-autoUpdater.logger = logger.debug;
+autoUpdater.logger = logger;
 
 logger.info('App starting...');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow: any;
+let mainWindow: BrowserWindow;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true });
@@ -44,19 +43,23 @@ function createWindow() {
         },
     });
 
+    logger.debug('Mainwindow created');
+
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
         mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+        logger.debug('Loading dev server');
         if (!process.env.IS_TEST) mainWindow.webContents.openDevTools();
     } else {
         createProtocol('app');
+        logger.debug('Loading app content');
+
         // Load the index.html when not in development
         mainWindow.loadURL('app://./index.html');
-
-        logger.debug('Loading app content');
     }
 
     mainWindow.on('closed', () => {
+        logger.debug('Mainwindow was closed');
         mainWindow = null;
     });
 }

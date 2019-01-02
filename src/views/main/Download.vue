@@ -47,10 +47,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import IrcDownloader from '../../irc-downloader';
-import generateRandomUsername from '../../utils/utils';
-import { HSRelease, HSReleaseDownloadInfo } from '../../types/types';
-import WindowHeader from '../../components/WindowHeader.vue';
+import IrcDownloader from '@/common/irc';
+import generateRandomUsername from '@/common/utils/utils';
+import { HSRelease, HSReleaseDownloadInfo } from '@/types/types';
+import WindowHeader from '@/components/WindowHeader.vue';
 
 @Component({
     components: { WindowHeader },

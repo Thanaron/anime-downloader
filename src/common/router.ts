@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Main from './views/Main.vue';
-import Home from './views/main/Home.vue';
-import Settings from './views/main/Settings.vue';
-import Download from './views/main/Download.vue';
+import Main from '@/views/Main.vue';
+import Home from '@/views/main/Home.vue';
+import Settings from '@/views/main/Settings.vue';
+import Download from '@/views/main/Download.vue';
 
 Vue.use(Router);
 

@@ -1,5 +1,5 @@
-import { Theme } from './types/types';
-import logger from './utils/logger';
+import { Theme } from '../types/types';
+import logger from '@/common/utils/logger';
 
 const fs = require('fs');
 const path = require('path');
@@ -8,22 +8,34 @@ const basePath = process.env.BASE_URL;
 
 class ApplicationTheme {
     static set(theme: Theme) {
+        logger.debug('Attempting to apply theme: %j', theme);
         ApplicationTheme.removeExistingThemeIfNeeded();
 
         const themeInDirectory = path.join(basePath, 'themes', theme.file);
 
+        logger.debug('Creating theme element %s', themeInDirectory);
         const link = document.createElement('link');
         link.type = 'text/css';
         link.rel = 'stylesheet';
         link.href = themeInDirectory;
         link.id = 'theme';
         document.getElementsByTagName('head')[0].appendChild(link);
+
+        if (document.getElementById('theme') != null) {
+            logger.info('Successfully attached new theme');
+        } else {
+            logger.error('Unable to attach new theme');
+        }
     }
 
     private static removeExistingThemeIfNeeded() {
         const element = ApplicationTheme.getCurrentThemeElement();
+        logger.info('Removing existing theme');
         if (element !== null && element.parentElement !== null) {
             element.parentElement.removeChild(element);
+            logger.debug('Existing theme removed');
+        } else {
+            logger.warn('Unable to remove existing theme');
         }
     }
 

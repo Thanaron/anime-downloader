@@ -24,8 +24,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { remote } from 'electron';
 
-const { app, getCurrentWindow } = require('electron').remote;
+const { app, getCurrentWindow } = remote;
 
 @Component
 export default class Titlebar extends Vue {
