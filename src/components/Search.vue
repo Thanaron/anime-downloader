@@ -39,17 +39,18 @@ import Component from 'vue-class-component';
 import Packlist from '@/common/packlist';
 import logger from '@/common/utils/logger';
 
-import logger from '../utils/logger';
-
 @Component
 export default class Search extends Vue {
     loading: boolean = false;
     selectedResolution: string = '1080';
-    downloadPossible: boolean = true;
     input: string = '';
 
     get searchText() {
         return this.$store.state.app.searchText;
+    }
+
+    get downloadPossible() {
+        return this.$store.state.app.selectedEpisodes.length > 0;
     }
 
     search() {
