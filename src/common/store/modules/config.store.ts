@@ -1,7 +1,8 @@
 import { Module, MutationTree, ActionTree, GetterTree } from 'vuex';
 import { getField, updateField } from 'vuex-map-fields';
-import store from '../../config';
+import store from '@/common/config';
 import { ConfigState, RootState } from '@/types/types';
+import logger from '@/common/utils/logger';
 
 const state: ConfigState = {
     visibleColumns: {
@@ -17,8 +18,8 @@ const state: ConfigState = {
     uniqueEpisodesOnly: true,
     downloadPath: '',
     username: '',
-    availableThemes: [],
     selectedTheme: { name: 'Dark', file: 'Dark.css' },
+    logLevel: 'info',
 };
 
 const getters: GetterTree<ConfigState, RootState> = {
@@ -31,16 +32,21 @@ const mutations: MutationTree<ConfigState> = {
 
 const actions: ActionTree<ConfigState, RootState> = {
     loadCurrentSettings({ commit }) {
+        logger.debug('Loading settings..');
+
         const { config } = store.store;
 
         Object.entries(config).forEach(([key, value]) => {
             commit('updateField', { path: key, value });
         });
+        logger.info('Settings loaded');
     },
     setSettings({ state }) {
+        logger.debug('Saving settings..');
         Object.entries(state).forEach(([key, value]) => {
             store.set(`config.${key}`, value);
         });
+        logger.info('Settings saved');
     },
 };
 

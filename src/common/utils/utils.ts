@@ -1,7 +1,6 @@
 import axios from 'axios';
-import store from '../store/store';
-
-const log = require('electron-log');
+import store from '@/common/store/store';
+import logger from './logger';
 
 async function generateRandomUsername() {
     try {
@@ -13,11 +12,11 @@ async function generateRandomUsername() {
                 scheme: 'cvcvvcv',
             },
         });
-        log.info(`Generated new username: ${response.data}`);
+        logger.info('Generated new username: %s', response.data);
         setUsername(response.data);
         return response.data;
     } catch (err) {
-        log.error(err);
+        logger.error(err);
     }
 }
 

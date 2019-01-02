@@ -7,8 +7,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Search from '../../components/Search.vue';
-import ResultTable from '../../components/ResultTable.vue';
+import Search from '@/components/Search.vue';
+import ResultTable from '@/components/ResultTable.vue';
 
 @Component({
     components: {

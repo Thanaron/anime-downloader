@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
-import App from './App.vue';
-import router from './router';
-import store from './store/store';
+import App from '@/App.vue';
+import router from '@/common/router';
+import store from '@/common/store/store';
 
 import '@fortawesome/fontawesome-free/css/fontawesome.css';
 import '@fortawesome/fontawesome-free/css/solid.min.css';

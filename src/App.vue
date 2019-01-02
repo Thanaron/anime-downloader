@@ -5,19 +5,21 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Theme } from './types/types';
-import ApplicationTheme from './theme';
-
-const log = require('electron-log');
-const unhandled = require('electron-unhandled');
+import { Theme } from '@/types/types';
+import ApplicationTheme from '@/common/theme';
+import logger, { setLevel } from '@/common/utils/logger';
 
 @Component
 export default class App extends Vue {
     created() {
-        unhandled({ logger: log.error, showDialog: false });
-        this.$store.dispatch('config/loadCurrentSettings');
+        logger.debug('Preparing application');
 
+        this.$store.dispatch('config/loadCurrentSettings');
         ApplicationTheme.set(this.$store.state.config.selectedTheme);
+
+        setLevel(this.$store.state.config.logLevel);
+
+        logger.debug('Creating application..');
     }
 }
 </script>
@@ -28,6 +30,15 @@ export default class App extends Vue {
     }
     to {
         opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
     }
 }
 

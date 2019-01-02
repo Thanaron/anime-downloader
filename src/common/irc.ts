@@ -1,6 +1,7 @@
 import ircXdcc from 'irc-xdcc';
-import log from 'electron-log';
-import { HSReleaseDownloadInfo } from './types/types';
+import logger from '@/common/utils/logger';
+import { HSReleaseDownloadInfo } from '@/types/types';
+
 class IrcDownloader {
     public instance: any;
     public isConnected: boolean = false;
@@ -30,7 +31,7 @@ class IrcDownloader {
             this.instance = instance;
             return instance;
         } catch (error) {
-            log.error(error);
+            logger.error(error);
         }
     }
 
@@ -42,7 +43,7 @@ class IrcDownloader {
                 if (entry) {
                     entry.progress = xdccInstance.xdccInfo.progress;
                     entry.received = (received / 1024 / 1024).toFixed(0);
-                    log.info(
+                    logger.info(
                         `XDCC-PROGRESS: Progress update for: ${
                             entry.release.name
                         } - ${entry.release.episode} | ${entry.progress}% - ${
@@ -50,7 +51,7 @@ class IrcDownloader {
                         } MB received.`
                     );
                 } else {
-                    log.warn('Entry not found');
+                    logger.warn('Entry not found');
                 }
             }
         );
@@ -61,7 +62,7 @@ class IrcDownloader {
                 entry.progress = 100;
                 entry.received = entry.release.size;
                 entry.finished = true;
-                log.info(
+                logger.info(
                     `XDCC-COMPLETE: Download complete: ${
                         entry.release.name
                     } - ${entry.release.episode}`
@@ -70,7 +71,7 @@ class IrcDownloader {
         });
 
         this.instance.on('registered', (message: any) => {
-            log.info(
+            logger.info(
                 `IRC-REGISTERED: Connected to server: ${JSON.stringify(
                     message
                 )}`
@@ -83,7 +84,7 @@ class IrcDownloader {
                 if (nick !== this.username) {
                     return;
                 }
-                log.warn(
+                logger.warn(
                     `IRC-QUIT: User ${nick} has quit the server. Reason: ${reason} - ${JSON.stringify(
                         message
                     )} - Channel: ${channels}`
@@ -97,7 +98,7 @@ class IrcDownloader {
                 if (nick !== this.username) {
                     return;
                 }
-                log.warn(
+                logger.warn(
                     `IRC-KILL: User connection of ${nick} has been killed. Reason: ${reason}  - ${JSON.stringify(
                         message
                     )} - Channel: ${JSON.stringify(channels)}`
@@ -118,7 +119,7 @@ class IrcDownloader {
                     return;
                 }
 
-                log.info(
+                logger.info(
                     `IRC-KICK: User ${nick} has been kicked from ${channel} by ${by}. Reason: ${reason} - ${message}`
                 );
             }
@@ -126,15 +127,15 @@ class IrcDownloader {
 
         this.instance.on('connected', (channels: any) => {
             this.isConnected = true;
-            log.info(`IRC-CONNECTED: Joined ${JSON.stringify(channels)}`);
+            logger.info(`IRC-CONNECTED: Joined ${JSON.stringify(channels)}`);
         });
 
         this.instance.on('xdcc-error', (message: any) => {
-            log.error(`XDCC-ERROR: ${message}`);
+            logger.error(`XDCC-ERROR: ${message}`);
         });
 
         this.instance.on('xdcc-created', (xdccInstance: XdccInstance) => {
-            log.info(
+            logger.info(
                 `XDCC-CREATED: Created new XDCC instance: ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -142,7 +143,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-removed', (xdccInstance: XdccInstance) => {
-            log.info(
+            logger.info(
                 `XDCC-REMOVED: Removed XDCC instance ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -150,7 +151,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-started', (xdccInstance: XdccInstance) => {
-            log.info(
+            logger.info(
                 `XDCC-STARTED: XDCC SEND command has been sent: ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -158,7 +159,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-queued', (xdccInstance: XdccInstance) => {
-            log.info(
+            logger.info(
                 `XDCC-QUEUED: Requested XDCC instance added to queue: ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -166,7 +167,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-canceled', (xdccInstance: XdccInstance) => {
-            log.warn(
+            logger.warn(
                 `XDCC-CANCELED: XDCC transfer has been canceled: ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -179,7 +180,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-connect', (xdccInstance: XdccInstance) => {
-            log.info(
+            logger.info(
                 `XDCC-CONNECT: XDCC transfer starts : ${JSON.stringify(
                     xdccInstance
                 )}`
@@ -187,7 +188,7 @@ class IrcDownloader {
         });
 
         this.instance.on('xdcc-dlerror', (xdccInstance: XdccInstance) => {
-            log.error(
+            logger.error(
                 `XDCC-DLERROR: ${JSON.stringify(JSON.stringify(xdccInstance))}`
             );
             const entry = this.findEntry(xdccInstance, episodesToDownload);
@@ -232,7 +233,7 @@ class IrcDownloader {
                 xdccInstance.start();
             })
             .catch((error: any) => {
-                log.error(error.message);
+                logger.error(error.message);
             });
     }
 
@@ -252,7 +253,7 @@ class IrcDownloader {
                 xdccInstance.start();
             })
             .catch((error: any) => {
-                log.error(error.message);
+                logger.error(error.message);
             });
     }
 

@@ -18,8 +18,8 @@ export interface ConfigState {
     uniqueEpisodesOnly: boolean;
     downloadPath: string;
     username: string;
-    availableThemes: Theme[];
     selectedTheme: Theme;
+    logLevel: string;
 }
 
 export interface ApplicationState {

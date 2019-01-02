@@ -36,19 +36,21 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Packlist from '../packlist';
-
-const log = require('electron-log');
+import Packlist from '@/common/packlist';
+import logger from '@/common/utils/logger';
 
 @Component
 export default class Search extends Vue {
     loading: boolean = false;
     selectedResolution: string = '1080';
-    downloadPossible: boolean = true;
     input: string = '';
 
     get searchText() {
         return this.$store.state.app.searchText;
+    }
+
+    get downloadPossible() {
+        return this.$store.state.app.selectedEpisodes.length > 0;
     }
 
     search() {
@@ -70,7 +72,7 @@ export default class Search extends Vue {
                 this.$store.dispatch('setTableData', result);
             })
             .catch(err => {
-                log.error(err);
+                logger.error(err);
             });
     }
 }

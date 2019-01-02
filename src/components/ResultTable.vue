@@ -55,7 +55,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { HSRelease } from '../types/types';
+import { HSRelease } from '@/types/types';
 
 @Component
 export default class ResultTable extends Vue {
