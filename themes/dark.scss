@@ -1,19 +1,19 @@
-@import '~bulma/sass/utilities/initial-variables';
-@import '~nord/src/sass/nord.scss';
+@import '../node_modules/bulma/sass/utilities/initial-variables';
+@import '../node_modules/nord/src/sass/nord.scss';
 
-$black: $nord0;
-$black-bis: $nord1;
-$black-ter: $nord2;
+$black: $nord4;
+$black-bis: $nord11;
+$black-ter: $nord6;
 
-$grey-darker: $nord0;
-$grey-dark: $nord1;
-$grey: $nord2;
-$grey-light: $nord3;
+$grey-darker: $nord4;
+$grey-dark: $nord5;
+$grey: $nord6;
+$grey-light: $nord10;
 $grey-lighter: $nord3;
 
-$white-ter: $nord6;
-$white-bis: $nord4;
-$white: $nord6;
+$white-ter: $nord0;
+$white-bis: $nord1;
+$white: $nord0;
 
 $orange: $nord12;
 $yellow: $nord13;
@@ -26,7 +26,7 @@ $red: $nord11;
 
 $body-background-color: $white-ter;
 
-$input-background-color: $white-bis;
+$input-background-color: $nord2;
 
 $modal-background-background-color: rgba($white-bis, 0.85);
 
@@ -35,7 +35,7 @@ $input-shadow: none;
 $table-row-hover-background-color: $blue;
 $table-striped-row-even-hover-background-color: $blue;
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 $body-family: 'Open Sans', sans-serif;
 
 /* width */
@@ -45,7 +45,7 @@ $body-family: 'Open Sans', sans-serif;
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: $nord6;
+    background: $nord0;
 }
 
 /* Handle */
@@ -72,5 +72,5 @@ hr {
     @extend .has-background-danger;
 }
 
-@import '~bulma';
-@import '~buefy/src/scss/buefy';
+@import '../node_modules/bulma/bulma';
+@import '../node_modules/buefy/src/scss/buefy';

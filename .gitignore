@@ -24,3 +24,8 @@ yarn-error.log*
 /dist_electron
 
 /downloads
+
+themes/*.css.map
+public/themes
+
+*.log

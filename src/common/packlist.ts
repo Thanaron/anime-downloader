@@ -1,24 +1,34 @@
 import axios from 'axios';
-import log from 'electron-log';
+import logger from '@/common/utils/logger';
+import { HSRelease } from '@/types/types';
 import _ from 'lodash';
 
 class Packlist {
-    static search(
-        input: string,
-        resolution: string,
-        uniqueEpisodes: boolean
-    ): Promise<void | HSRelease[]> {
-        log.debug(`Requesting data for ${input} with resolution ${resolution}`);
+    static async search(
+        name: string,
+        resolution: number,
+        group: boolean,
+        sort: boolean
+    ) {
+        logger.debug(
+            `Requesting data for ${name} with resolution ${resolution}`
+        );
         return axios
-            .get(`http://xdcc.horriblesubs.info/search.php?t=${input} ${resolution}`)
+            .get(
+                `http://xdcc.horriblesubs.info/search.php?t=${name} ${resolution}`
+            )
             .then(response => response.data)
             .then(data => data.split(/[\r\n]+/))
             .then(text => text.map(Packlist.parseLine))
             .then(result => result.filter((entry: HSRelease) => entry !== null))
-            .then(result => _.sortBy(result, ['name', 'episode']))
-            .then(result => (uniqueEpisodes ? Packlist.showUniqueEpisodesOnly(result) : result))
+            .then(result =>
+                sort ? _.sortBy(result, ['name', 'episode']) : result
+            )
+            .then(result =>
+                group ? Packlist.showUniqueEpisodesOnly(result) : result
+            )
             .catch(error => {
-                log.error(error);
+                logger.error(error);
             });
     }
 
@@ -35,7 +45,7 @@ class Packlist {
             pack: parseInt(match[2], 10),
             size: parseInt(match[3], 10),
             name: match[4],
-            episode: parseInt(match[5], 10),
+            episode: match[5],
             resolution: parseInt(match[6], 10),
             extension: match[7],
         };

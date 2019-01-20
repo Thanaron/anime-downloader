@@ -1,5 +1,5 @@
 <template>
-    <header id="titlebar">
+    <header id="titlebar" class="has-text-black">
         <div id="drag-region">
             <div id="window-title">
                 <span>HS Downloader - {{ version }}</span>
@@ -24,8 +24,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { remote } from 'electron';
 
-const { app, getCurrentWindow } = require('electron').remote;
+const { app, getCurrentWindow } = remote;
 
 @Component
 export default class Titlebar extends Vue {
@@ -79,7 +80,6 @@ export default class Titlebar extends Vue {
     height: 32px;
     width: 100%;
     padding: 4px;
-    @extend .has-text-black;
 }
 
 #titlebar #drag-region {
@@ -123,13 +123,6 @@ export default class Titlebar extends Vue {
     grid-column: 3;
 }
 
-#window-controls .win-button:hover {
-    background: rgba($grey-darker, 0.2);
-    opacity: 1;
-}
-#window-controls #close-button:hover {
-    @extend .has-background-danger;
-}
 #window-controls #restore-button {
     display: none;
 }

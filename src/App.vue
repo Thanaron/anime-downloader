@@ -5,29 +5,21 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import SetupModal from './components/SetupModal.vue';
-
-const log = require('electron-log');
-const unhandled = require('electron-unhandled');
+import { Theme } from '@/types/types';
+import ApplicationTheme from '@/common/theme';
+import logger, { setLevel } from '@/common/utils/logger';
 
 @Component
 export default class App extends Vue {
     created() {
-        unhandled({ logger: log.error });
-        this.$store.dispatch('loadCurrentSettings');
-    }
+        logger.debug('Preparing application');
 
-    mounted() {
-        if (
-            !this.$store.state.username ||
-            this.$store.state.username.length === 0
-        ) {
-            this.$modal.open({
-                component: SetupModal,
-                hasModalCard: true,
-                parent: this,
-            });
-        }
+        this.$store.dispatch('config/loadCurrentSettings');
+        ApplicationTheme.set(this.$store.state.config.selectedTheme);
+
+        setLevel(this.$store.state.config.logLevel);
+
+        logger.debug('Creating application..');
     }
 }
 </script>
@@ -41,8 +33,25 @@ export default class App extends Vue {
     }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 .app {
     -webkit-user-select: none;
-    animation: fadeIn 0.5s;
+    animation: fadeIn 500ms;
+}
+
+select {
+    border-color: transparent;
+}
+
+a {
+    outline: none;
 }
 </style>

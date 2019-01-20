@@ -1,5 +1,5 @@
-@import '~bulma/sass/utilities/initial-variables';
-@import '~nord/src/sass/nord.scss';
+@import '../node_modules/bulma/sass/utilities/initial-variables';
+@import '../node_modules/nord/src/sass/nord.scss';
 
 $black: $nord0;
 $black-bis: $nord1;
@@ -72,5 +72,5 @@ hr {
     @extend .has-background-danger;
 }
 
-@import '~bulma';
-@import '~buefy/src/scss/buefy';
+@import '../node_modules/bulma/bulma';
+@import '../node_modules/buefy/src/scss/buefy';
