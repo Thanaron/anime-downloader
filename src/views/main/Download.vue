@@ -109,24 +109,21 @@ export default class Download extends Vue {
         });
     }
 
-    onCancel() {
-        this.$dialog.confirm({
-            title: 'Cancel download?',
-            message: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Fusce id fermentum quam. Proin sagittis,
-                        nibh id hendrerit imperdiet, elit sapien laoreet elit,
-                        ac scelerisque diam velit in nisl. Nunc maximus ex non
-                        laoreet semper. Nunc scelerisque, libero sit amet pretium dignissim,
-                        augue purus placerat justo,
-                        sit amet porttitor dui metus in nisl.`,
-            cancelText: 'Cancel',
-            confirmText: 'Start',
-            type: 'is-primary',
-            onConfirm: () => this.performDownload(),
-        });
-    }
-
     onClose() {
+        if (this.downloadStarted) {
+            this.$dialog.confirm({
+                title: 'Cancel download?',
+                message: `You are about to close the download window while a download is still active. Do you want to continue?`,
+                cancelText: 'Cancel',
+                confirmText: 'Continue',
+                type: 'is-primary',
+                onConfirm: () => {
+                    this.downloadStarted = false;
+                    this.onClose();
+                },
+            });
+        }
+
         if (this.downloader && this.downloader.isConnected) {
             this.downloader.disconnect();
         }
