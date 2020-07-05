@@ -122,9 +122,9 @@ function App() {
             label: 'Edit',
             submenu: [
                 {
-                    label: 'Preferences'
-                }
-            ]
+                    label: 'Preferences',
+                },
+            ],
         },
         {
             label: 'Debug',
@@ -138,8 +138,8 @@ function App() {
             ],
         },
         {
-            label: 'Help'
-        }
+            label: 'Help',
+        },
     ];
 
     return (
@@ -165,33 +165,37 @@ function App() {
             >
                 <Sider width="300" draggable="true" className="Sider">
                     <div style={{ height: 40 }} className="SiderHeader">
-                        {<div
-                            style={{
-                                position: 'absolute',
-                                left: '5px',
-                                top: '9px',
+                        {
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    left: '5px',
+                                    top: '9px',
 
-                                verticalAlign: 'middle',
-                            }}
-                        >
-                            <Badge dot>
-                                <Button>
-                                    <DownloadOutlined
-                                        style={{ fontSize: 20 }}
-                                    />
-                                </Button>
-                            </Badge>
-                        </div>}
+                                    verticalAlign: 'middle',
+                                }}
+                            >
+                                <Badge dot>
+                                    <Button>
+                                        <DownloadOutlined
+                                            style={{ fontSize: 20 }}
+                                        />
+                                    </Button>
+                                </Badge>
+                            </div>
+                        }
 
-                        {<MenuOutlined
-                            style={{
-                                position: 'absolute',
-                                right: '5px',
-                                top: '12px',
-                                fontSize: '20px',
-                                verticalAlign: 'middle',
-                            }}
-                        />}
+                        {
+                            <MenuOutlined
+                                style={{
+                                    position: 'absolute',
+                                    right: '5px',
+                                    top: '12px',
+                                    fontSize: '20px',
+                                    verticalAlign: 'middle',
+                                }}
+                            />
+                        }
                     </div>
 
                     <div>
@@ -308,7 +312,6 @@ function App() {
                             size="small"
                             dataSource={data}
                             renderItem={(item) => (
-
                                 <List.Item
                                     style={{
                                         borderBottom: '0px',
@@ -317,11 +320,13 @@ function App() {
                                         flexWrap: 'wrap',
                                     }}
                                 >
-
-
-                                    <Text strong style={{
-                                        color: '#ECEFF4', width: '35%',
-                                    }}>
+                                    <Text
+                                        strong
+                                        style={{
+                                            color: '#ECEFF4',
+                                            width: '35%',
+                                        }}
+                                    >
                                         English (American)
                                     </Text>
 
@@ -330,12 +335,11 @@ function App() {
                                             color: '#D8DEE9',
                                             width: '65%',
                                             display: 'inlineFlex',
-                                            alignItems: 'center'
+                                            alignItems: 'center',
                                         }}
                                     >
                                         &nbsp;{item.value}
                                     </Text>
-
                                 </List.Item>
                             )}
                         />
@@ -398,7 +402,7 @@ function App() {
                 fontWeight: 'bold',
                 color: '#4c566a'
             }}>Download 4 Videos</Button> */}
-        </div >
+        </div>
     );
 }
 

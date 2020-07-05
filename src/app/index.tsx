@@ -2,8 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import '../themes/dark.less';
-import App from './App';
+import App from './ui/App';
 import * as serviceWorker from './serviceWorker';
+import { KitsuDataProvider } from './provider/data/kitsu/kitsu.provider';
+
+(async () => {
+    const kitsuSearchResult = await new KitsuDataProvider().getSearchResults(
+        'Boku no Hero Academia'
+    );
+})();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
